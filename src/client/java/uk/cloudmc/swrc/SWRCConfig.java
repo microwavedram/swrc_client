@@ -16,6 +16,7 @@ public class SWRCConfig implements ConfigData {
 
     private static SWRCConfig instance;
 
+    public String default_server = "wss://swrc.cloudmc.uk/realtime/";
     public String swrc_key = "";
     public String race_key = "";
     public String header_text = "S3 @ %s";

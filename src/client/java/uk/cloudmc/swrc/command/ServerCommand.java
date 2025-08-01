@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import uk.cloudmc.swrc.SWRCConfig;
 import uk.cloudmc.swrc.WebsocketManager;
 import uk.cloudmc.swrc.net.packets.C2SCreateNewSessionPacket;
+import uk.cloudmc.swrc.net.packets.C2SDestroySessionPacket;
 import uk.cloudmc.swrc.net.packets.S2CSessionsPacket;
 import uk.cloudmc.swrc.util.ChatFormatter;
 
@@ -33,8 +34,22 @@ public class ServerCommand implements CommandNodeProvider {
 
                     if (!id.toLowerCase().contains(builder.getRemainingLowerCase())) continue;
 
-                    builder.suggest(id);
+                    builder.suggest(id );
                 }
+            }
+
+            return builder.buildFuture();
+        }
+    }
+
+    private static class SWRCSuggester implements SuggestionProvider<FabricClientCommandSource> {
+        @Override
+        public CompletableFuture<Suggestions> getSuggestions(CommandContext<FabricClientCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
+
+            String suggestion = '"' + SWRCConfig.getInstance().default_server + '"';
+
+            if (suggestion.toLowerCase().contains(builder.getRemainingLowerCase())) {
+                builder.suggest(suggestion);
             }
 
             return builder.buildFuture();
@@ -48,6 +63,7 @@ public class ServerCommand implements CommandNodeProvider {
                 literal("connect")
                 .then(
                     argument("uri", StringArgumentType.string())
+                    .suggests(new SWRCSuggester())
                     .executes(this::doConnect)
                 )
             )
@@ -76,6 +92,26 @@ public class ServerCommand implements CommandNodeProvider {
     }
 
     private int doDestroySession(CommandContext<FabricClientCommandSource> context) {
+        String session = StringArgumentType.getString(context, "session");
+
+        if (WebsocketManager.swrcSocketAvalible()) {
+
+            if (!WebsocketManager.swrcWebsocketConnection.sessions.containsKey(session)) {
+                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Invalid session"));
+                return 0;
+            }
+
+            C2SDestroySessionPacket destroySessionPacket = new C2SDestroySessionPacket();
+
+            destroySessionPacket.key = SWRCConfig.getInstance().swrc_key;
+            destroySessionPacket.session = session;
+
+            WebsocketManager.swrcWebsocketConnection.sendPacket(destroySessionPacket);
+
+            return Command.SINGLE_SUCCESS;
+        }
+
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Not connected"));
         return 0;
     }
 

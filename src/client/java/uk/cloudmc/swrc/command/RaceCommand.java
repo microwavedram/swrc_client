@@ -14,6 +14,10 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.entity.vehicle.ChestBoatEntity;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import uk.cloudmc.swrc.Race;
 import uk.cloudmc.swrc.SWRC;
 import uk.cloudmc.swrc.WebsocketManager;
@@ -23,6 +27,7 @@ import uk.cloudmc.swrc.util.ChatFormatter;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
@@ -49,6 +54,10 @@ RaceCommand implements CommandNodeProvider {
                     literal("QUALI")
                     .executes(context -> doUpdateRaceState(context, Race.RaceState.QUALI))
                 )
+            )
+            .then(
+                literal("url")
+                .executes(this::doUrl)
             )
             .then(
                 literal("quit")
@@ -130,6 +139,31 @@ RaceCommand implements CommandNodeProvider {
                 )
             )
             .then(new RaceTimerCommand().command());
+    }
+
+    private int doUrl(CommandContext<FabricClientCommandSource> context) {
+        if (SWRC.getRace() != null) {
+            String host = WebsocketManager.swrcWebsocketConnection.getURI().getHost();
+
+            String link = "https://" + host + "/races/" + SWRC.getRace().getId();
+
+            context.getSource().sendFeedback(
+                ChatFormatter.GENERIC_MESSAGE("URL: ")
+                    .append(Text.literal(link).styled(style ->
+                        style
+                            .withFormatting(Formatting.GOLD)
+                            .withFormatting(Formatting.UNDERLINE)
+                            .withClickEvent(new ClickEvent.OpenUrl(URI.create(link)))
+                            .withHoverEvent(new HoverEvent.ShowText(Text.literal(
+                                    link
+                            ).styled(style1 -> style1.withFormatting(Formatting.UNDERLINE))))
+                    ))
+            );
+            return Command.SINGLE_SUCCESS;
+        }
+
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("No race active"));
+        return 0;
     }
 
     private int doExportQuali(CommandContext<FabricClientCommandSource> context) {
@@ -227,16 +261,16 @@ RaceCommand implements CommandNodeProvider {
     private int doAddPlayersNearbyBoat(CommandContext<FabricClientCommandSource> context) {
         float range = FloatArgumentType.getFloat(context, "range");
 
-        assert SWRC.instance.world != null;
-        assert SWRC.instance.player != null;
+        assert SWRC.minecraftClient.world != null;
+        assert SWRC.minecraftClient.player != null;
 
         if (WebsocketManager.rcSocketAvalible()) {
             int added = 0;
-            for (AbstractClientPlayerEntity worldPlayer : SWRC.instance.world.getPlayers()) {
+            for (AbstractClientPlayerEntity worldPlayer : SWRC.minecraftClient.world.getPlayers()) {
                 if (!(worldPlayer.getVehicle() instanceof BoatEntity) && !(worldPlayer.getVehicle() instanceof ChestBoatEntity))
                     continue;
 
-                if (worldPlayer.getPos().distanceTo(SWRC.instance.player.getPos()) <= range) {
+                if (worldPlayer.getPos().distanceTo(SWRC.minecraftClient.player.getPos()) <= range) {
                     C2SModifyRacerPacket packet = new C2SModifyRacerPacket();
 
                     packet.action = C2SModifyRacerPacket.ModifyRacerPacketAction.ADD;
@@ -258,15 +292,15 @@ RaceCommand implements CommandNodeProvider {
     private int doAddPlayersNearby(CommandContext<FabricClientCommandSource> context) {
         float range = FloatArgumentType.getFloat(context, "range");
 
-        assert SWRC.instance.player != null;
+        assert SWRC.minecraftClient.player != null;
 
         if (WebsocketManager.rcSocketAvalible()) {
             int added = 0;
-            assert SWRC.instance.world != null;
-            for (AbstractClientPlayerEntity worldPlayer : SWRC.instance.world.getPlayers()) {
-                if (worldPlayer.getName().equals(SWRC.instance.player.getName())) continue;
+            assert SWRC.minecraftClient.world != null;
+            for (AbstractClientPlayerEntity worldPlayer : SWRC.minecraftClient.world.getPlayers()) {
+                if (worldPlayer.getName().equals(SWRC.minecraftClient.player.getName())) continue;
 
-                if (worldPlayer.getPos().distanceTo(SWRC.instance.player.getPos()) <= range) {
+                if (worldPlayer.getPos().distanceTo(SWRC.minecraftClient.player.getPos()) <= range) {
                     C2SModifyRacerPacket packet = new C2SModifyRacerPacket();
 
                     packet.action = C2SModifyRacerPacket.ModifyRacerPacketAction.ADD;

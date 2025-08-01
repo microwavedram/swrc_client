@@ -6,21 +6,19 @@ import com.google.gson.annotations.Expose;
 
 import java.nio.charset.StandardCharsets;
 
-public class C2SHandshakePacket extends Packet<C2SHandshakePacket> {
-    public static final char packetId = 0x01;
+public class C2SDestroySessionPacket extends Packet<C2SDestroySessionPacket> {
+    public static final char packetId = 0x42;
 
     private final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-    @Expose public String username;
-    @Expose public String uuid;
-    @Expose public String version;
+    @Expose public String session;
+    @Expose public String key;
 
     @Override
     public String toString() {
-        return "C2SHandshakePacket{" +
-                "username='" + username + '\'' +
-                ", uuid='" + uuid + '\'' +
-                ", version='" + version + '\'' +
+        return "C2SDestroySessionPacket{" +
+                "session='" + session + '\'' +
+                ", key='" + key + '\'' +
                 '}';
     }
 
@@ -30,8 +28,8 @@ public class C2SHandshakePacket extends Packet<C2SHandshakePacket> {
     }
 
     @Override
-    public C2SHandshakePacket fromBytes(byte[] data) {
-        return gson.fromJson(new String(data, StandardCharsets.UTF_8), C2SHandshakePacket.class);
+    public C2SDestroySessionPacket fromBytes(byte[] data) {
+        return gson.fromJson(new String(data, StandardCharsets.UTF_8), C2SDestroySessionPacket.class);
     }
 
     @Override

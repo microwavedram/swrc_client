@@ -12,14 +12,10 @@ import java.util.HashMap;
 public class C2SPushTrackPacket extends Packet<C2SPushTrackPacket> {
     public static final char packetId = 0x03;
 
-    @Expose
-    public String race_id;
-    @Expose
-    public Track track;
-    @Expose
-    public int total_laps;
-    @Expose
-    public int total_pits;
+    @Expose public String race_id;
+    @Expose public Track track;
+    @Expose public int total_laps;
+    @Expose public int total_pits;
 
     @Override
     public String toString() {

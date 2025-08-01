@@ -4,7 +4,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -14,13 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.cloudmc.swrc.command.RootCommand;
 import uk.cloudmc.swrc.hud.*;
-import uk.cloudmc.swrc.net.packets.S2CSessionsPacket;
 import uk.cloudmc.swrc.render.TrackBuilderRenderer;
 import uk.cloudmc.swrc.track.TrackBuilder;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SWRC implements ClientModInitializer {
 
@@ -28,7 +24,7 @@ public class SWRC implements ClientModInitializer {
 	public static final String NAMESPACE = "swrc";
 	public static final String VERSION = "3.0.0";
 
-	public static final MinecraftClient instance = MinecraftClient.getInstance();
+	public static final MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
 	private static Race race;
 	private static TrackBuilder trackBuilder;
@@ -39,6 +35,7 @@ public class SWRC implements ClientModInitializer {
 	public static final Hud splitTime = new SplitTime();
 	public static final Hud bestLap = new BestLap();
 	public static final Hud timerHud = new TimerHud();
+	public static final Hud eventsQueue = new EventsQueue();
 
 	@Override
 	public void onInitializeClient() {
@@ -85,6 +82,9 @@ public class SWRC implements ClientModInitializer {
 				}
 				if (timerHud.shouldRender()) {
 					timerHud.render(drawContext, 0.0f);
+				}
+				if (eventsQueue.shouldRender()) {
+					eventsQueue.render(drawContext, 0.0f);
 				}
 			});
 		});

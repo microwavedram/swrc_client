@@ -12,8 +12,7 @@ import java.util.ArrayList;
 public class C2SSpeedTrapPacket extends Packet<C2SSpeedTrapPacket> {
     public static final char packetId = 0x12;
 
-    @Expose
-    public SpeedTrapResult speedTrapResult;
+    @Expose public SpeedTrapResult speedTrapResult;
 
     @Override
     public String toString() {

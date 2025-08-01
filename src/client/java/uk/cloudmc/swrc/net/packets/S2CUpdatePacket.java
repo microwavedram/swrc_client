@@ -12,14 +12,10 @@ public class S2CUpdatePacket extends Packet<S2CUpdatePacket> {
     public static final char packetId = 0x05;
 
     public static class RaceLeaderboardPosition {
-        @Expose
-        public String player_name;
-        @Expose
-        public long time_delta;
-        @Expose
-        public boolean in_pit;
-        @Expose
-        public long flap;
+        @Expose public String player_name;
+        @Expose public long time_delta;
+        @Expose public boolean in_pit;
+        @Expose public long flap;
 
         public RaceLeaderboardPosition(String player_name, long time_delta, boolean in_pit, long flap) {
             this.player_name = player_name;
@@ -40,10 +36,8 @@ public class S2CUpdatePacket extends Packet<S2CUpdatePacket> {
     }
 
     public static class PlayerSplit {
-        @Expose
-        public String player_name;
-        @Expose
-        public long timestamp;
+        @Expose public String player_name;
+        @Expose public long timestamp;
 
         public PlayerSplit(String player_name, long timestamp) {
             this.player_name = player_name;
@@ -60,14 +54,10 @@ public class S2CUpdatePacket extends Packet<S2CUpdatePacket> {
     }
 
     public static class Flap {
-        @Expose
-        String player_name;
-        @Expose
-        int lap;
-        @Expose
-        long time;
-        @Expose
-        long acquired;
+        @Expose String player_name;
+        @Expose int lap;
+        @Expose long time;
+        @Expose long acquired;
 
         public Flap(String player_name, int lap, long time, long acquired) {
             this.player_name = player_name;
@@ -115,22 +105,14 @@ public class S2CUpdatePacket extends Packet<S2CUpdatePacket> {
         }
     }
 
-    @Expose
-    public ArrayList<String> racers;
-    @Expose
-    public ArrayList<RaceLeaderboardPosition> race_leaderboard;
-    @Expose
-    public ArrayList<PlayerSplit> race_lap_begin;
-    @Expose
-    public HashMap<String, Integer> racer_pits;
-    @Expose
-    public HashMap<String, Integer> racer_laps;
-    @Expose
-    public Flap flap;
-    @Expose
-    public long timer_start;
-    @Expose
-    public long timer_duration;
+    @Expose public ArrayList<String> racers;
+    @Expose public ArrayList<RaceLeaderboardPosition> race_leaderboard;
+    @Expose public ArrayList<PlayerSplit> race_lap_begin;
+    @Expose public HashMap<String, Integer> racer_pits;
+    @Expose public HashMap<String, Integer> racer_laps;
+    @Expose public Flap flap;
+    @Expose public long timer_start;
+    @Expose public long timer_duration;
 
     @Override
     public String toString() {

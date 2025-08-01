@@ -39,9 +39,15 @@ public class Race {
     private long start_time;
     private long duration;
 
-    public Race(String id, Track track) {
+    private int total_laps;
+    private int total_pits;
+
+    public Race(String id, Track track, int total_laps, int total_pits) {
         this.id = id;
         this.track = track;
+
+        this.total_laps = total_laps;
+        this.total_pits = total_pits;
 
         for (Checkpoint checkpoint : track.checkpoints) {
             checkpoint.recalculate();
@@ -70,12 +76,12 @@ public class Race {
     }
 
     public void update() {
-        if (SWRC.instance.world == null || this.raceState == RaceState.NONE) return;
+        if (SWRC.minecraftClient.world == null || this.raceState == RaceState.NONE) return;
 
         long update_start = System.currentTimeMillis();
 
         ArrayList<Snapshot> snapshots = new ArrayList<>();
-        for (AbstractClientPlayerEntity player: SWRC.instance.world.getPlayers()) {
+        for (AbstractClientPlayerEntity player: SWRC.minecraftClient.world.getPlayers()) {
             if (isRacing(player.getName().getString())) {
                 snapshots.add(new Snapshot(player.getName().getString(), player.getPos(), player.getVelocity()));
             }
@@ -191,7 +197,7 @@ public class Race {
     public void setRaceState(RaceState raceState) {
         this.raceState = raceState;
 
-        SWRC.instance.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE(String.format("Race State updated: %s", raceState)));
+        SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE(String.format("Race State updated: %s", raceState)));
     }
 
     public long getLapBeginTime(String racer) {
@@ -202,6 +208,18 @@ public class Race {
         }
 
         return System.currentTimeMillis();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public int getTotalLaps() {
+        return total_laps;
+    }
+
+    public int getTotalPits() {
+        return total_pits;
     }
 
     public void setLapCounts(HashMap<String, Integer> laps) {
@@ -245,10 +263,10 @@ public class Race {
     }
 
     public int getSelfBoardPosition() {
-        assert SWRC.instance.player != null;
+        assert SWRC.minecraftClient.player != null;
 
         for (int i = 0; i < this.raceLeaderboardPositions.size(); i++) {
-            if (this.raceLeaderboardPositions.get(i).player_name.equals(SWRC.instance.player.getName().getString())) {
+            if (this.raceLeaderboardPositions.get(i).player_name.equals(SWRC.minecraftClient.player.getName().getString())) {
                 return i;
             }
         }

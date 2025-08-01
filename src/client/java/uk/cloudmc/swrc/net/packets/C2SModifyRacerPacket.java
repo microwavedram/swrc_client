@@ -13,10 +13,8 @@ public class C2SModifyRacerPacket extends Packet<C2SModifyRacerPacket> {
         REMOVE,
     }
 
-    @Expose
-    public String racer_name;
-    @Expose
-    public ModifyRacerPacketAction action;
+    @Expose public String racer_name;
+    @Expose public ModifyRacerPacketAction action;
 
     @Override
     public char getPacketId() {

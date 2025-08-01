@@ -21,6 +21,11 @@ public class SWRCModMenu implements ModMenuApi {
             ConfigCategory Category = builder.getOrCreateCategory(Text.of("Settings"));
             ConfigEntryBuilder packet = builder.entryBuilder();
 
+            Category.addEntry(packet.startStrField(Text.of("Default server"), config.default_server)
+                    .setDefaultValue("wss://swrc.cloudmc.uk/realtime/")
+                    .setSaveConsumer(newValue -> config.default_server = newValue)
+                    .build());
+
             Category.addEntry(packet.startStrField(Text.of("SWRC Key"), config.swrc_key)
                     .setDefaultValue("")
                     .setSaveConsumer(newValue -> config.swrc_key = newValue)

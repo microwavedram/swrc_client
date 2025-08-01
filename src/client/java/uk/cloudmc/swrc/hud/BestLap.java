@@ -29,7 +29,7 @@ public class BestLap implements Hud {
 
     @Override
     public boolean shouldRender() {
-        if (SWRC.instance.player == null) return false;
+        if (SWRC.minecraftClient.player == null) return false;
         return SWRC.getRace() != null;
     }
 
@@ -39,8 +39,8 @@ public class BestLap implements Hud {
 
         if (race.getFlap() == null) return;
 
-        this.scaledWidth = SWRC.instance.getWindow().getScaledWidth();
-        this.scaledHeight = SWRC.instance.getWindow().getScaledHeight();
+        this.scaledWidth = SWRC.minecraftClient.getWindow().getScaledWidth();
+        this.scaledHeight = SWRC.minecraftClient.getWindow().getScaledHeight();
 
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -78,10 +78,10 @@ public class BestLap implements Hud {
     }
 
     public static void renderText(DrawContext graphics, String text, int x, int y, int color) {
-        graphics.drawText(SWRC.instance.textRenderer, text, x, y, color, SWRCConfig.getInstance().leaderboard_shadow);
+        graphics.drawText(SWRC.minecraftClient.textRenderer, text, x, y, color, SWRCConfig.getInstance().leaderboard_shadow);
     }
 
     public static int widthOfText(String text) {
-        return SWRC.instance.textRenderer.getWidth(text);
+        return SWRC.minecraftClient.textRenderer.getWidth(text);
     }
 }

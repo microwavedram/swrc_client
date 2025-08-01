@@ -2,14 +2,8 @@ package uk.cloudmc.swrc.hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.entity.feature.WitchHeldItemFeatureRenderer;
-import uk.cloudmc.swrc.Race;
 import uk.cloudmc.swrc.SWRC;
 import uk.cloudmc.swrc.SWRCConfig;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.realms.util.TextRenderingUtils;
-import net.minecraft.client.render.RenderLayer;
 
 import java.text.DecimalFormat;
 
@@ -39,8 +33,8 @@ public class TimerHud implements Hud {
 
     @Override
     public void render(DrawContext context, float tickDelta) {
-        this.scaledWidth = SWRC.instance.getWindow().getScaledWidth();
-        this.scaledHeight = SWRC.instance.getWindow().getScaledHeight();
+        this.scaledWidth = SWRC.minecraftClient.getWindow().getScaledWidth();
+        this.scaledHeight = SWRC.minecraftClient.getWindow().getScaledHeight();
 
         long time_current = System.currentTimeMillis() ;
         long time_remaining = Math.min(Math.max(SWRC.getRace().getDuration() * 1000 - (time_current - SWRC.getRace().getStartTime()), 0), SWRC.getRace().getDuration() * 1000);
@@ -48,7 +42,7 @@ public class TimerHud implements Hud {
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         context.drawText(
-                SWRC.instance.textRenderer,
+                SWRC.minecraftClient.textRenderer,
                 msToTimeString(time_remaining),
                 (scaledWidth/10)*9, (scaledHeight/10),
                 0xffffff,

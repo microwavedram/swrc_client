@@ -11,8 +11,7 @@ import java.util.HashMap;
 public class S2CRaceState extends Packet<S2CRaceState> {
     public static final char packetId = 0x09;
 
-    @Expose
-    public Race.RaceState state;
+    @Expose public Race.RaceState state;
 
     @Override
     public char getPacketId() {

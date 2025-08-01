@@ -12,8 +12,7 @@ public class S2CHandshakePacket extends Packet<S2CHandshakePacket> {
 
     private final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-    @Expose
-    public String motd;
+    @Expose public String motd;
 
     @Override
     public String toString() {

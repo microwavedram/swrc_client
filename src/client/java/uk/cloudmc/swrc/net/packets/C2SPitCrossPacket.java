@@ -12,10 +12,8 @@ public class C2SPitCrossPacket extends Packet<C2SPitCrossPacket> {
 
     private final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-    @Expose
-    public long timestamp;
-    @Expose
-    public ArrayList<String> pit_crosses;
+    @Expose public long timestamp;
+    @Expose public ArrayList<String> pit_crosses;
 
     @Override
     public String toString() {

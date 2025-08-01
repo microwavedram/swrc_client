@@ -9,8 +9,7 @@ import java.nio.charset.StandardCharsets;
 public class C2SRaceState extends Packet<C2SRaceState> {
     public static final char packetId = 0x09;
 
-    @Expose
-    public Race.RaceState state;
+    @Expose public Race.RaceState state;
 
     @Override
     public char getPacketId() {

@@ -394,11 +394,11 @@ public class TrackBuilderCommand implements CommandNodeProvider {
     private int doCheckpointRight(CommandContext<FabricClientCommandSource> context) {
         TrackBuilder trackBuilder = SWRC.getTrackBuilder();
 
-        assert SWRC.instance.player != null;
+        assert SWRC.minecraftClient.player != null;
 
         if (trackBuilder != null) {
             if (trackBuilder.checkpointBuilder.hasActiveCheckpoint()) {
-                Vec3d position = SWRC.instance.player.getPos();
+                Vec3d position = SWRC.minecraftClient.player.getPos();
 
                 trackBuilder.checkpointBuilder.setRight(position);
 
@@ -417,11 +417,11 @@ public class TrackBuilderCommand implements CommandNodeProvider {
     private int doCheckpointLeft(CommandContext<FabricClientCommandSource> context) {
         TrackBuilder trackBuilder = SWRC.getTrackBuilder();
 
-        assert SWRC.instance.player != null;
+        assert SWRC.minecraftClient.player != null;
 
         if (trackBuilder != null) {
             if (trackBuilder.checkpointBuilder.hasActiveCheckpoint()) {
-                Vec3d position = SWRC.instance.player.getPos();
+                Vec3d position = SWRC.minecraftClient.player.getPos();
 
                 trackBuilder.checkpointBuilder.setLeft(position);
 

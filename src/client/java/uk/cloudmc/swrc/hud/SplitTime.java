@@ -7,7 +7,6 @@ import net.minecraft.util.Identifier;
 import uk.cloudmc.swrc.Race;
 import uk.cloudmc.swrc.SWRC;
 import uk.cloudmc.swrc.SWRCConfig;
-import uk.cloudmc.swrc.net.packets.S2CUpdatePacket;
 
 import java.text.DecimalFormat;
 
@@ -24,11 +23,13 @@ public class SplitTime implements Hud {
 
     @Override
     public boolean shouldRender() {
-        if (SWRC.instance.player == null) return false;
+        if (SWRC.minecraftClient.player == null) return false;
         if (SWRC.getRace() == null) return false;
         if (SWRC.getRace().getRaceState() == Race.RaceState.NONE) return false;
 
-        return SWRC.getRace().isRacing(SWRC.instance.player.getName().getString());
+        if (SWRC.getRace().laps.getOrDefault(SWRC.minecraftClient.player.getGameProfile().getName(), 0) > SWRC.getRace().getTotalLaps()) return false;
+
+        return SWRC.getRace().isRacing(SWRC.minecraftClient.player.getName().getString());
     }
 
     @Override
@@ -37,8 +38,8 @@ public class SplitTime implements Hud {
 
         if (race.raceLeaderboardPositions.isEmpty()) return;
 
-        this.scaledWidth = SWRC.instance.getWindow().getScaledWidth();
-        this.scaledHeight = SWRC.instance.getWindow().getScaledHeight();
+        this.scaledWidth = SWRC.minecraftClient.getWindow().getScaledWidth();
+        this.scaledHeight = SWRC.minecraftClient.getWindow().getScaledHeight();
 
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -46,7 +47,7 @@ public class SplitTime implements Hud {
         int y = (int) (this.scaledHeight * 0.6);
 
         int selfPlace = race.getSelfBoardPosition();
-        long current_lap = System.currentTimeMillis() - race.getLapBeginTime(SWRC.instance.player.getName().getString());
+        long current_lap = System.currentTimeMillis() - race.getLapBeginTime(SWRC.minecraftClient.player.getName().getString());
         long delta_to_infront = 0;
 
         if (selfPlace > 0) {
@@ -56,7 +57,7 @@ public class SplitTime implements Hud {
             delta_to_infront = self_delta - infront_delta;
         }
 
-        String time_text = msToTimeString(current_lap);
+        String time_text = msToTimeString(current_lap) + " P" + (selfPlace + 1);
         String split_text = (delta_to_infront >= 0 ? "+" : "") + msToTimeString(delta_to_infront);
 
         int combined_length = widthOfText(time_text) + widthOfText(split_text) + 4;
@@ -98,10 +99,10 @@ public class SplitTime implements Hud {
     }
 
     public static void renderText(DrawContext graphics, String text, int x, int y, int color) {
-        graphics.drawText(SWRC.instance.textRenderer, text, x, y, color, SWRCConfig.getInstance().leaderboard_shadow);
+        graphics.drawText(SWRC.minecraftClient.textRenderer, text, x, y, color, SWRCConfig.getInstance().leaderboard_shadow);
     }
 
     public static int widthOfText(String text) {
-        return SWRC.instance.textRenderer.getWidth(text);
+        return SWRC.minecraftClient.textRenderer.getWidth(text);
     }
 }

@@ -1,16 +1,11 @@
 package uk.cloudmc.swrc.hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.realms.util.TextRenderingUtils;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
-import org.joml.Matrix4f;
 import uk.cloudmc.swrc.Race;
 import uk.cloudmc.swrc.SWRC;
 import uk.cloudmc.swrc.SWRCConfig;
@@ -46,8 +41,8 @@ public class RaceLeaderboard implements Hud {
     public void render(DrawContext graphics, float tickDelta) {
         Race race = SWRC.getRace();
 
-        this.scaledWidth = SWRC.instance.getWindow().getScaledWidth();
-        this.scaledHeight = SWRC.instance.getWindow().getScaledHeight();
+        this.scaledWidth = SWRC.minecraftClient.getWindow().getScaledWidth();
+        this.scaledHeight = SWRC.minecraftClient.getWindow().getScaledHeight();
 
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -60,7 +55,8 @@ public class RaceLeaderboard implements Hud {
 
         graphics.drawTexture(RenderLayer::getGuiTextured, WIDGETS_TEXTURE, x + 3, y + 3, 5, 0, 25, 10, 256, 256);
 
-        renderText(graphics, String.format(SWRCConfig.getInstance().header_text, SWRC.getRaceName()), x + 30, y + 4, 0xFFFFFF);
+        renderText(graphics, String.format(SWRCConfig.getInstance().header_text, SWRC.getRaceName()), x + 32, y + 4, 0xFFFFFF);
+        renderText(graphics, String.format("%s Laps %s Pits", race.getTotalLaps(), race.getTotalPits()), x + 120, y + 4, 0xFFFFFF);
 
         int offset = 0;
         for (S2CUpdatePacket.RaceLeaderboardPosition position : race.raceLeaderboardPositions) {
@@ -73,7 +69,7 @@ public class RaceLeaderboard implements Hud {
             double precise_targeted_height = lerp(rowHeight.getOrDefault(position.player_name, (double) offset  * 9), offset  * 9, 0.05);
             int derived_height = (int) precise_targeted_height;
 
-            PlayerListEntry playerListEntry = SWRC.instance.getNetworkHandler().getPlayerListEntry(position.player_name);
+            PlayerListEntry playerListEntry = SWRC.minecraftClient.getNetworkHandler().getPlayerListEntry(position.player_name);
 
             if (playerListEntry != null) {
                 PlayerSkinDrawer.draw(graphics, playerListEntry.getSkinTextures(), x + 12 + 6, y + 14 + derived_height + 4, 8);
@@ -82,7 +78,11 @@ public class RaceLeaderboard implements Hud {
             renderText(graphics, String.format("%s", offset + 1), x + 4, y + 14 + derived_height + 4, pos_color);
             renderText(graphics, String.format("%s", position.player_name), x + 22 + 6, y + 14 + derived_height + 4, race.getFlap() != null && race.getFlap().getPlayer_name().equals(position.player_name) ? 0x9803FC : 0xFFFFFF);
 
-            if (position.in_pit) {
+            if (race.laps.getOrDefault(position.player_name, 0) > race.getTotalLaps()) {
+                int start_pos = width - widthOfText("FINISHED") - 2;
+
+                renderText(graphics, "FINISHED", x + start_pos + 6, y + 14 + derived_height + 4, 0xBBBBBB );
+            } else if (position.in_pit) {
                 int start_pos = width - widthOfText("IN PIT") - 2;
 
                 renderText(graphics, "IN PIT", x + start_pos + 6, y + 14 + derived_height + 4, 0x888888 );
@@ -121,11 +121,11 @@ public class RaceLeaderboard implements Hud {
     }
 
     public static void renderText(DrawContext graphics, String text, int x, int y, int color) {
-        graphics.drawText(SWRC.instance.textRenderer, text, x, y, color, SWRCConfig.getInstance().leaderboard_shadow);
+        graphics.drawText(SWRC.minecraftClient.textRenderer, text, x, y, color, SWRCConfig.getInstance().leaderboard_shadow);
     }
 
     public static int widthOfText(String text) {
-        return SWRC.instance.textRenderer.getWidth(text);
+        return SWRC.minecraftClient.textRenderer.getWidth(text);
     }
 
     /*public static void renderBox(DrawContext graphics, Identifier texture, int tx, int ty, int x, int y, int hh, int bh, int w) {

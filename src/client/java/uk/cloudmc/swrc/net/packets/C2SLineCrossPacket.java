@@ -13,10 +13,8 @@ public class C2SLineCrossPacket extends Packet<C2SLineCrossPacket> {
 
     private final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-    @Expose
-    public long timestamp;
-    @Expose
-    public HashMap<Integer, ArrayList<String>> checkpoint_crosses;
+    @Expose public long timestamp;
+    @Expose public HashMap<Integer, ArrayList<String>> checkpoint_crosses;
 
     @Override
     public String toString() {

@@ -10,6 +10,7 @@ import uk.cloudmc.swrc.SWRCConfig;
 import uk.cloudmc.swrc.net.packets.S2CUpdatePacket;
 
 import java.text.DecimalFormat;
+import java.util.HashMap;
 
 public class QualiLeaderboard implements Hud {
 
@@ -21,7 +22,13 @@ public class QualiLeaderboard implements Hud {
 
     private static final DecimalFormat decimalFormat = new DecimalFormat("00.000");
 
+    private static final HashMap<String, Double> rowHeight = new HashMap<>();
+
     public QualiLeaderboard() {}
+
+    private double lerp(double a, double b, double t) {
+        return a + (b - a) * t;
+    }
 
     @Override
     public boolean shouldRender() {
@@ -32,8 +39,8 @@ public class QualiLeaderboard implements Hud {
     public void render(DrawContext graphics, float tickDelta) {
         Race race = SWRC.getRace();
 
-        this.scaledWidth = SWRC.instance.getWindow().getScaledWidth();
-        this.scaledHeight = SWRC.instance.getWindow().getScaledHeight();
+        this.scaledWidth = SWRC.minecraftClient.getWindow().getScaledWidth();
+        this.scaledHeight = SWRC.minecraftClient.getWindow().getScaledHeight();
 
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -46,7 +53,7 @@ public class QualiLeaderboard implements Hud {
 
         graphics.drawTexture(RenderLayer::getGuiTextured, WIDGETS_TEXTURE, x + 3, y + 3, 5, 0, 25, 10, 256, 256);
 
-        renderText(graphics, String.format(SWRCConfig.getInstance().header_text, SWRC.getRaceName()), x + 30, y + 4, 0xFFFFFF);
+        renderText(graphics, String.format(SWRCConfig.getInstance().header_text, SWRC.getRaceName()), x + 32, y + 4, 0xFFFFFF);
 
         int offset = 0;
         for (S2CUpdatePacket.RaceLeaderboardPosition position : race.raceLeaderboardPositions) {
@@ -56,17 +63,20 @@ public class QualiLeaderboard implements Hud {
             if (offset == 1) pos_color = 0xB2B1BD;
             if (offset == 2) pos_color = 0x805B2B;
 
-            renderText(graphics, String.format("%s", offset + 1), x + 4, y + 14 + offset * 9 + 4, pos_color);
-            renderText(graphics, String.format("%s", position.player_name), x + 22, y + 14 + offset * 9 + 4, 0xFFFFFF);
+            double precise_targeted_height = lerp(rowHeight.getOrDefault(position.player_name, (double) offset  * 9), offset  * 9, 0.05);
+            int derived_height = (int) precise_targeted_height;
+
+            renderText(graphics, String.format("%s", offset + 1), x + 4, y + 14 + derived_height + 4, pos_color);
+            renderText(graphics, String.format("%s", position.player_name), x + 22, y + 14 + derived_height + 4, 0xFFFFFF);
 
             int start_pos = width - widthOfText("-" + msToTimeString(position.time_delta)) - 2;
 
-            renderText(graphics, String.format("%s%s", position.time_delta > 0 ? "+" : "" , msToTimeString(position.time_delta)), x + start_pos, y + 14 + offset * 9 + 4, position.time_delta >= 0 ? 0x00FF00 : 0xFF0000 );
+            renderText(graphics, String.format("%s%s", position.time_delta > 0 ? "+" : "" , msToTimeString(position.time_delta)), x + start_pos, y + 14 + derived_height + 4, position.time_delta >= 0 ? 0x00FF00 : 0xFF0000 );
 
             if (position.flap == -1) {
-                renderText(graphics, "-", x + start_pos - 37, y + 14 + offset * 9 + 4, 0xEBCC34 );
+                renderText(graphics, "-", x + start_pos - 37, y + 14 + derived_height + 4, 0xEBCC34 );
             } else {
-                renderText(graphics, String.format("%s", msToTimeString(position.flap)), x + start_pos - 37, y + 14 + offset * 9 + 4, 0xEBCC34 );
+                renderText(graphics, String.format("%s", msToTimeString(position.flap)), x + start_pos - 37, y + 14 + derived_height + 4, 0xEBCC34 );
             }
 
             offset += 1;
@@ -88,11 +98,11 @@ public class QualiLeaderboard implements Hud {
     }
 
     public static void renderText(DrawContext graphics, String text, int x, int y, int color) {
-        graphics.drawText(SWRC.instance.textRenderer, text, x, y, color, SWRCConfig.getInstance().leaderboard_shadow);
+        graphics.drawText(SWRC.minecraftClient.textRenderer, text, x, y, color, SWRCConfig.getInstance().leaderboard_shadow);
     }
 
     public static int widthOfText(String text) {
-        return SWRC.instance.textRenderer.getWidth(text);
+        return SWRC.minecraftClient.textRenderer.getWidth(text);
     }
 
     /*public static void renderBox(DrawContext graphics, Identifier texture, int tx, int ty, int x, int y, int hh, int bh, int w) {

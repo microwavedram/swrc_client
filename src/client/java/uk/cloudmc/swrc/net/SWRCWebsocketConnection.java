@@ -1,20 +1,16 @@
 package uk.cloudmc.swrc.net;
 
-import net.minecraft.network.message.SentMessage;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
-import org.spongepowered.asm.mixin.Mutable;
 import uk.cloudmc.swrc.SWRC;
 import uk.cloudmc.swrc.SWRCConfig;
-import uk.cloudmc.swrc.WebsocketManager;
 import uk.cloudmc.swrc.net.packets.*;
 import uk.cloudmc.swrc.util.ChatFormatter;
 
-import java.awt.datatransfer.StringSelection;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -66,26 +62,26 @@ public class SWRCWebsocketConnection extends AbstractWebsocketConnection {
     @Override
     public void onPacket(Packet<?> uPacket) {
         if (uPacket instanceof S2CHelloPacket packet) {
-            SWRC.instance.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("[SWRC] Successfully connected to server."));
+            SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("[SWRC] Successfully connected to server."));
 
             server_label = packet.server_label;
 
             C2SHandshakePacket handshake = new C2SHandshakePacket();
 
-            assert SWRC.instance.player != null;
+            assert SWRC.minecraftClient.player != null;
             
-            handshake.username = SWRC.instance.player.getName().getString();
-            handshake.uuid = SWRC.instance.player.getUuidAsString();
+            handshake.username = SWRC.minecraftClient.player.getName().getString();
+            handshake.uuid = SWRC.minecraftClient.player.getUuidAsString();
             handshake.version = SWRC.VERSION;
 
             sendPacket(handshake);
         }
         if (uPacket instanceof S2CHandshakePacket packet) {
-            SWRC.instance.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("[SWRC] " + packet.motd));
-            SWRC.instance.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("[SWRC] Connected to " + this.server_label));
+            SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("[SWRC] " + packet.motd));
+            SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("[SWRC] Connected to " + this.server_label));
         }
         if (uPacket instanceof S2CMessagePacket packet) {
-            SWRC.instance.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE(String.format("[SWRC] %s", packet.message)));
+            SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE(String.format("[SWRC] %s", packet.message)));
         }
         if (uPacket instanceof S2CSessionsPacket packet) {
             server_performance = packet.perf;
@@ -99,16 +95,16 @@ public class SWRCWebsocketConnection extends AbstractWebsocketConnection {
             }
         }
         if (uPacket instanceof S2CNewSessionPacket packet) {
-            SWRC.instance.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE(String.format("[SWRC] New session created %s", packet.id)));
+            SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE(String.format("[SWRC] New session created %s", packet.id)));
 
             SWRCConfig.getInstance().race_key = packet.race_key;
             SWRCConfig.getInstance().save();
 
-            SWRC.instance.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("Race Key saved to config"));
+            SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("Race Key saved to config"));
 
-            GLFW.glfwSetClipboardString(SWRC.instance.getWindow().getHandle(), packet.race_key);
+            GLFW.glfwSetClipboardString(SWRC.minecraftClient.getWindow().getHandle(), packet.race_key);
 
-            SWRC.instance.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("Race Key copied to clipboard"));
+            SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("Race Key copied to clipboard"));
         }
     }
 
@@ -135,10 +131,9 @@ public class SWRCWebsocketConnection extends AbstractWebsocketConnection {
                     .append(Text.literal(" - "))
                     .append(Text.literal(String.valueOf(session.getValue().perf)))
                     .append(Text.literal("mspt"))
-                    .append("\n")
             );
         }
 
-        SWRC.instance.inGameHud.getChatHud().addMessage(text);
+        SWRC.minecraftClient.inGameHud.getChatHud().addMessage(text);
     }
 }

@@ -12,10 +12,8 @@ public class C2SPitEnterPacket extends Packet<C2SPitEnterPacket> {
 
     private final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-    @Expose
-    public long timestamp;
-    @Expose
-    public ArrayList<String> pit_enter_crosses;
+    @Expose public long timestamp;
+    @Expose public ArrayList<String> pit_enter_crosses;
 
     @Override
     public String toString() {

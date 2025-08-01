@@ -22,7 +22,9 @@ public abstract class AbstractWebsocketConnection extends WebSocketClient {
         onConnect();
     }
     public void onConnect() {}
-    public void onDisconnect(int code, String reason, boolean remote) {}
+    public void onDisconnect(int code, String reason, boolean remote) {
+
+    }
     public void onPacket(Packet<?> packet) {}
 
     @Override
@@ -38,9 +40,9 @@ public abstract class AbstractWebsocketConnection extends WebSocketClient {
     public void onError(Exception ex) {
         SWRC.LOGGER.error(ex.toString(), ex.getMessage());
         if (ex.getMessage().contains("Connection refused: connect")) {
-            SWRC.instance.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("Failed to connect"));
+            SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("Failed to connect"));
             return;
         }
-        SWRC.instance.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE(ex.getMessage()));
+        SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE(ex.getMessage()));
     }
 }
