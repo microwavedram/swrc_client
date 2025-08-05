@@ -231,8 +231,8 @@ public class TrackBuilderCommand implements CommandNodeProvider {
 
                             mutableText = mutableText.append(
                                     Text.literal(String.format("[%s]\n", answer)).styled(style -> style.withFormatting(Formatting.GOLD)
-                                            .withHoverEvent(new HoverEvent.ShowText(Text.literal("Submit")))
-                                            .withClickEvent(new ClickEvent.RunCommand("/swrc track_builder save " + target + " " + answer))
+                                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Submit")))
+                                            .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/swrc track_builder save " + target + " " + answer))
                                     )
                             );
                         }

@@ -55,9 +55,9 @@ public class PlayerNameValidator {
                                 style
                                     .withFormatting(Formatting.GREEN)
                                     .withHoverEvent(
-                                        new HoverEvent.ShowText(Text.literal("Rename to " + playerListEntry.getProfile().getName()))
+                                        new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Rename to " + playerListEntry.getProfile().getName()))
                                     )
-                                    .withClickEvent(new ClickEvent.RunCommand("/swrc race player rename " + name + " " + playerListEntry.getProfile().getName()))
+                                    .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/swrc race player rename " + name + " " + playerListEntry.getProfile().getName()))
                                 )
                             )
                 );

@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.cloudmc.swrc.command.RootCommand;
 import uk.cloudmc.swrc.hud.*;
-import uk.cloudmc.swrc.render.TrackBuilderRenderer;
 import uk.cloudmc.swrc.track.TrackBuilder;
 
 import java.io.File;
@@ -31,7 +30,6 @@ public class SWRC implements ClientModInitializer {
 	private static Race race;
 	private static TrackBuilder trackBuilder;
 
-	private static final TrackBuilderRenderer trackBuilderRenderer = new TrackBuilderRenderer();
 	public static final RaceLeaderboard raceLeaderboard = new RaceLeaderboard();
 	public static final QualiLeaderboard qualiLeaderboard = new QualiLeaderboard();
 	public static final SplitTime splitTime = new SplitTime();
@@ -107,8 +105,6 @@ public class SWRC implements ClientModInitializer {
 				}
 			});
 		});
-
-		WorldRenderEvents.LAST.register(trackBuilderRenderer);
 	}
 
 	public static TrackBuilder getTrackBuilder() {

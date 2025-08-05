@@ -121,10 +121,12 @@ public class SWRCWebsocketConnection extends AbstractWebsocketConnection {
                     .append(Text.literal("[CONNECT] ").styled(style ->
                         style
                             .withFormatting(Formatting.GREEN)
-                            .withHoverEvent(new HoverEvent.ShowText(
+                            .withHoverEvent(new HoverEvent(
+                                    HoverEvent.Action.SHOW_TEXT,
                                 Text.literal("Connect to " + session.getKey())
                             ))
-                            .withClickEvent(new ClickEvent.RunCommand(
+                            .withClickEvent(new ClickEvent(
+                                    ClickEvent.Action.RUN_COMMAND,
                                 "/swrc server sessions " + session.getKey() + " connect"
                             ))
                     ))
