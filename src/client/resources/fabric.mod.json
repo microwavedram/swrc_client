@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "swrc",
-	"version": "3.1.0",
+	"version": "3.1.1",
 	"name": "SW Race Control",
 	"description": "Mod for timing and controlling races on Stoneworks @ Formula Abex",
 	"authors": [

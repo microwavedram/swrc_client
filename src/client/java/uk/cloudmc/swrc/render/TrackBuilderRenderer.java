@@ -87,7 +87,8 @@ public class TrackBuilderRenderer implements WorldRenderEvents.Last {
     public void renderPole(MatrixStack matrixStack, Camera camera, Vec3d pos, int color) {
         Tessellator tessellator = Tessellator.getInstance();
 
-        RenderSystem.disableScissor();
+        //RenderSystem.disableScissor();
+
 
         float prevLineWidth = RenderSystem.getShaderLineWidth();
 
@@ -111,7 +112,7 @@ public class TrackBuilderRenderer implements WorldRenderEvents.Last {
     public void renderLine(MatrixStack matrixStack, Camera camera, Vec3d pos1, Vec3d pos2, int color) {
         Tessellator tessellator = Tessellator.getInstance();
 
-        RenderSystem.disableScissor();
+        //RenderSystem.disableScissor();
 
         RenderSystem.lineWidth(3f);
 

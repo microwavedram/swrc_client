@@ -1,6 +1,7 @@
 package uk.cloudmc.swrc.hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
@@ -46,7 +47,7 @@ public class SplitTime implements Hud {
 
         if (race.laps.getOrDefault(SWRC.minecraftClient.player.getName().getString(), 0) > race.getTotalLaps()) return;
 
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+        //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         if (selfPlace > 0) {
             long self_delta = race.raceLeaderboardPositions.get(selfPlace).time_delta;
@@ -81,21 +82,25 @@ public class SplitTime implements Hud {
 
         x -= combined_length / 2;
 
+        renderText(graphics, time_text, x + 1, y + 1, 0xFFFFFFFF);
+        renderText(graphics, split_text, x + widthOfText(time_text) + 3, y + 1, 0xFFFFFFFF);
+        renderText(graphics, split_text, x + widthOfText(time_text) + 3, y + 1, 0xFFFFFFFF);
+
         for (int ax = 0; ax < widthOfText(time_text) + 2; ax++) {
-            graphics.drawTexture(RenderLayer::getGuiTextured, WIDGETS_TEXTURE, x + ax, y, tx, ty, 1, 10, 256, 256);
+            graphics.drawTexture(RenderPipelines.GUI_TEXTURED, WIDGETS_TEXTURE, x + ax, y, tx, ty, 1, 10, 256, 256);
             for (int ay = 0; ay < 10; ay++) {
-                graphics.drawTexture(RenderLayer::getGuiTextured, WIDGETS_TEXTURE, x + ax, y + ay, tx, ty, 1, 1, 256, 256);
+                graphics.drawTexture(RenderPipelines.GUI_TEXTURED, WIDGETS_TEXTURE, x + ax, y + ay, tx, ty, 1, 1, 256, 256);
             }
         }
 
 
         for (int bx = 0; bx < widthOfText(split_text) + 2; bx++) {
-            graphics.drawTexture(RenderLayer::getGuiTextured, WIDGETS_TEXTURE, x + bx + widthOfText(time_text) + 2, y, tx + 1, ty, 1, 10, 256, 256);
+            graphics.drawTexture(RenderPipelines.GUI_TEXTURED, WIDGETS_TEXTURE, x + bx + widthOfText(time_text) + 2, y, tx + 1, ty, 1, 10, 256, 256);
         }
 
-        renderText(graphics, time_text, x + 1, y + 1, 0xFFFFFF);
+        /*renderText(graphics, time_text, x + 1, y + 1, 0xFFFFFF);
         renderText(graphics, split_text, x + widthOfText(time_text) + 3, y + 1, 0xFFFFFF);
-        renderText(graphics, split_text, x + widthOfText(time_text) + 3, y + 1, 0xFFFFFF);
+        renderText(graphics, split_text, x + widthOfText(time_text) + 3, y + 1, 0xFFFFFF);*/
     }
 
     public static void renderText(DrawContext graphics, String text, int x, int y, int color) {

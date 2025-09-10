@@ -3,6 +3,7 @@ package uk.cloudmc.swrc.hud;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
+import org.joml.Matrix3x2fStack;
 import uk.cloudmc.swrc.SWRC;
 import uk.cloudmc.swrc.SWRCConfig;
 import uk.cloudmc.swrc.util.DeltaFormat;
@@ -26,13 +27,13 @@ public class TimerHud implements Hud {
             time_remaining = SWRC.getRace().getTimerDuration() * 1000;
         }
 
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+        //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-        MatrixStack matrixStack = context.getMatrices();
-        matrixStack.push();
+        Matrix3x2fStack matrixStack = context.getMatrices();
+        matrixStack.pushMatrix();
 
-        matrixStack.translate(scaledWidth - scaledHeight * .1f, scaledHeight * .1f, 0f);
-        matrixStack.scale(2, 2, 0);
+        matrixStack.translate(scaledWidth - scaledHeight * .1f, scaledHeight * .1f);
+        matrixStack.scale(2, 2);
 
         String label = DeltaFormat.formatMillis(time_remaining);
 
@@ -45,6 +46,6 @@ public class TimerHud implements Hud {
                 SWRCConfig.getInstance().leaderboard_shadow
         );
 
-        matrixStack.pop();
+        matrixStack.popMatrix();
     }
 }

@@ -1,6 +1,8 @@
 package uk.cloudmc.swrc.hud;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
@@ -30,7 +32,7 @@ public class DisconnectBanner implements Hud {
         this.scaledWidth = SWRC.minecraftClient.getWindow().getScaledWidth();
         this.scaledHeight = SWRC.minecraftClient.getWindow().getScaledHeight();
 
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+        //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         int u = 32;
         int v = 22;
@@ -43,7 +45,7 @@ public class DisconnectBanner implements Hud {
         // y=\max\left(0,\min\left(p,-\frac{6px}{t^{2}}\left(x-t\right)\left\{0<x<t\right\}\right)\right) :: p = peak :: t = ticks on screen
         int animationHeight = (int) Math.floor(Math.max(0, Math.min(p, -(6 * p * x)/(ON_SCREEN_TIME * ON_SCREEN_TIME) * (x - ON_SCREEN_TIME))));
 
-        graphics.drawTexture(RenderLayer::getGuiTextured, WIDGETS_TEXTURE, scaledWidth / 2 - w / 2, animationHeight - h, u, v, w, h, 256, 256);
+        graphics.drawTexture(RenderPipelines.GUI_TEXTURED, WIDGETS_TEXTURE, scaledWidth / 2 - w / 2, animationHeight - h, u, v, w, h, 256, 256);
     }
 
     public void show() {

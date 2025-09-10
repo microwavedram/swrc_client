@@ -1,6 +1,7 @@
 package uk.cloudmc.swrc.hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.network.PlayerListEntry;
@@ -38,7 +39,7 @@ public class RaceLeaderboard implements Hud {
     public void render(DrawContext graphics, float tickDelta) {
         Race race = SWRC.getRace();
 
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+        //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         int width = 50;
         int body_height = SWRC.getRace().raceLeaderboardPositions.size() * 9 + 2;
@@ -55,11 +56,11 @@ public class RaceLeaderboard implements Hud {
 
         //renderBox(graphics, WIDGETS_TEXTURE, 0, 0, x, y, 12, body_height, width);
 
-        graphics.drawTexture(RenderLayer::getGuiTextured, WIDGETS_TEXTURE, x + 3, y + 3, 5, 0, 25, 10, 256, 256);
+        //graphics.drawTexture(RenderPipelines.GUI_TEXTURED, WIDGETS_TEXTURE, x + 3, y + 3, 5, 0, 25, 10, 256, 256);
 
         String header = String.format(SWRCConfig.getInstance().header_text, SWRC.getRaceName());
 
-        renderText(graphics, header, x + 32, y + 5, 0xFFFFFF);
+        renderText(graphics, header, x + 32, y + 5, 0xFFFFFFFF);
 
         if (SWRC.getRace().getTotalLaps() < 10000) {
 
@@ -67,7 +68,7 @@ public class RaceLeaderboard implements Hud {
 
             if (SWRC.getRace().getTotalPits() == 1) s = "";
 
-            renderText(graphics, String.format("Lap %s/%s :: %s Pit%s", race_lap, race.getTotalLaps(), race.getTotalPits(), s), x + 46 + widthOfText(header), y + 5, 0xFFFFFF);
+            renderText(graphics, String.format("Lap %s/%s :: %s Pit%s", race_lap, race.getTotalLaps(), race.getTotalPits(), s), x + 46 + widthOfText(header), y + 5, 0xFFFFFFFF);
         }
 
         for (S2CUpdatePacket.RaceLeaderboardPosition position : race.raceLeaderboardPositions) {
@@ -81,23 +82,23 @@ public class RaceLeaderboard implements Hud {
 
         int offset = 0;
         for (S2CUpdatePacket.RaceLeaderboardPosition position : race.raceLeaderboardPositions) {
-            int pos_color = 0xFFFFFF;
+            int pos_color = 0xFFFFFFFF;
 
-            if (offset == 0) pos_color = 0xFCBA03;
-            if (offset == 1) pos_color = 0xB2B1BD;
-            if (offset == 2) pos_color = 0x805B2B;
+            if (offset == 0) pos_color = 0xFFFCBA03;
+            if (offset == 1) pos_color = 0xFFB2B1BD;
+            if (offset == 2) pos_color = 0xFF805B2B;
 
             double precise_targeted_height = lerp(rowHeight.getOrDefault(position.player_name, (double) offset  * 9), offset  * 9, 0.05);
             int derived_height = (int) Math.round(precise_targeted_height);
 
             PlayerListEntry playerListEntry = SWRC.minecraftClient.getNetworkHandler().getPlayerListEntry(position.player_name);
 
-            if (playerListEntry != null) {
-                PlayerSkinDrawer.draw(graphics, playerListEntry.getSkinTextures(), x + 12 + 6, y + 14 + derived_height + 4, 8);
-            }
+//            if (playerListEntry != null) {
+//                PlayerSkinDrawer.draw(graphics, playerListEntry.getSkinTextures(), x + 12 + 6, y + 14 + derived_height + 4, 8);
+//            }
 
             renderText(graphics, String.format("%s", offset + 1), x + 4, y + 14 + derived_height + 4, pos_color);
-            renderText(graphics, String.format("%s", position.player_name), x + 22 + 6, y + 14 + derived_height + 4, race.getFlap() != null && race.getFlap().getPlayerName().equals(position.player_name) ? 0x9803FC : 0xFFFFFF);
+            renderText(graphics, String.format("%s", position.player_name), x + 22 + 6, y + 14 + derived_height + 4, race.getFlap() != null && race.getFlap().getPlayerName().equals(position.player_name) ? 0xFF9803FC : 0xFFFFFFFF);
 
             int pits = race.pits.getOrDefault(position.player_name, 0);
             int laps = race.laps.getOrDefault(position.player_name, 0);
@@ -105,9 +106,9 @@ public class RaceLeaderboard implements Hud {
             if (position.in_pit) {
                 int start_pos = width - widthOfText("IN PIT") - 2;
 
-                renderText(graphics, "IN PIT", x + start_pos + 6, y + 14 + derived_height + 4, 0x888888 );
+                renderText(graphics, "IN PIT", x + start_pos + 6, y + 14 + derived_height + 4, 0xFF888888 );
             } else if (laps > race.getTotalLaps()) {
-                renderText(graphics, "FINISHED", x + width - 70 + 36, y + 14 + derived_height + 4, 0xAAAAAA);
+                renderText(graphics, "FINISHED", x + width - 70 + 36, y + 14 + derived_height + 4, 0xFFAAAAAA);
             } else {
                 int start_pos = width - widthOfText("-" + DeltaFormat.formatDelta(0)) - 2;
 
@@ -120,28 +121,32 @@ public class RaceLeaderboard implements Hud {
                             x + start_pos + 6,
                             y + 14 + derived_height + 4,
                             ColorUtil.lerpColor(
-                                    0xf5ee6a, // yellow
-                                    0xf56a6a, // red
+                                    0xFFf5ee6a, // yellow
+                                    0xFFf56a6a, // red
                                     clamp((float) Math.pow(2, delta / 60000f * -5), 0, 1)
                             )
                     );
                 } else if (delta > 0) {
-                    renderText(graphics, "ERR", x + start_pos + 6, y + 14 + derived_height + 4, 0xDDAAAA );
+                    renderText(graphics, "ERR", x + start_pos + 6, y + 14 + derived_height + 4, 0xFFDDAAAA );
                 } else {
                     if (offset == 0) {
-                        renderText(graphics, "INTERVAL", x + start_pos + 6, y + 14 + derived_height + 4, 0x6af573 );
+                        renderText(graphics, "INTERVAL", x + start_pos + 6, y + 14 + derived_height + 4, 0xFF6af573 );
                     } else {
-                        renderText(graphics, "-", x + start_pos + 6, y + 14 + derived_height + 4, 0xAAAAAA );
+                        renderText(graphics, "-", x + start_pos + 6, y + 14 + derived_height + 4, 0xFFAAAAAA );
                     }
                 }
 
                 last_delta = position.time_delta;
             }
 
-            renderText(graphics, String.format("%s", pits), x + width - 57 + 6, y + 14 + derived_height + 4, 0x00FFFF);
+            renderText(graphics, String.format("%s", pits), x + width - 57 + 6, y + 14 + derived_height + 4, 0xFF00FFFF);
 
             if (laps <= race.getTotalLaps()) {
-                renderText(graphics, String.format("%s", laps), x + width - 70 + 6, y + 14 + derived_height + 4, 0xFFFF00);
+                renderText(graphics, String.format("%s", laps), x + width - 70 + 6, y + 14 + derived_height + 4, 0xFFFFFF00);
+            }
+
+            if (playerListEntry != null) {
+                PlayerSkinDrawer.draw(graphics, playerListEntry.getSkinTextures(), x + 12 + 6, y + 14 + derived_height + 4, 8);
             }
 
             rowHeight.put(position.player_name, precise_targeted_height);
@@ -149,8 +154,9 @@ public class RaceLeaderboard implements Hud {
             offset += 1;
         }
         if (race.getFlap() != null) {
-            renderText(graphics, String.format("%s: %s", race.getFlap().getPlayerName(), DeltaFormat.formatMillis(race.getFlap().getTime())), x + 22, y + 14 + offset * 9 + 4, 0xAFFF14);
+            renderText(graphics, String.format("%s: %s", race.getFlap().getPlayerName(), DeltaFormat.formatMillis(race.getFlap().getTime())), x + 22, y + 14 + offset * 9 + 4, 0xFFAFFF14);
         }
+        graphics.drawTexture(RenderPipelines.GUI_TEXTURED, WIDGETS_TEXTURE, x + 3, y + 3, 5, 0, 25, 10, 256, 256);
     }
 
     public static void renderText(DrawContext graphics, String text, int x, int y, int color) {

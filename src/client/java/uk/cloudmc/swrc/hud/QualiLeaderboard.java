@@ -1,6 +1,7 @@
 package uk.cloudmc.swrc.hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.network.PlayerListEntry;
@@ -38,7 +39,7 @@ public class QualiLeaderboard implements Hud {
     public void render(DrawContext graphics, float tickDelta) {
         Race race = SWRC.getRace();
 
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+        //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         int width = 50;
         int body_height = SWRC.getRace().raceLeaderboardPositions.size() * 9 + 2;
@@ -53,13 +54,13 @@ public class QualiLeaderboard implements Hud {
 
         //renderBox(graphics, WIDGETS_TEXTURE, 0, 0, x, y, 12, body_height, width);
 
-        graphics.drawTexture(RenderLayer::getGuiTextured, WIDGETS_TEXTURE, x + 3, y + 3, 5, 0, 25, 10, 256, 256);
+        //graphics.drawTexture(RenderPipelines.GUI_TEXTURED, WIDGETS_TEXTURE, x + 3, y + 3, 5, 0, 25, 10, 256, 256);
 
         String header = String.format(SWRCConfig.getInstance().header_text, SWRC.getRaceName());
 
-        renderText(graphics, header, x + 32, y + 5, 0xFFFFFF);
+        renderText(graphics, header, x + 32, y + 5, 0xFFFFFFFF);
 
-        renderText(graphics, String.format("Lap %s / %s", race_lap, race.getTotalLaps()), x + 46 + widthOfText(header), y + 5, 0xFFFFFF);
+        renderText(graphics, String.format("Lap %s / %s", race_lap, race.getTotalLaps()), x + 46 + widthOfText(header), y + 5, 0xFFFFFFFF);
 
         for (S2CUpdatePacket.RaceLeaderboardPosition position : race.raceLeaderboardPositions) {
             width = Math.max(width, widthOfText(position.player_name));
@@ -69,28 +70,28 @@ public class QualiLeaderboard implements Hud {
 
         int offset = 0;
         for (S2CUpdatePacket.RaceLeaderboardPosition position : race.raceLeaderboardPositions) {
-            int pos_color = 0xFFFFFF;
+            int pos_color = 0xFFFFFFFF;
 
-            if (offset == 0) pos_color = 0xFCBA03;
-            if (offset == 1) pos_color = 0xB2B1BD;
-            if (offset == 2) pos_color = 0x805B2B;
+            if (offset == 0) pos_color = 0xFFFCBA03;
+            if (offset == 1) pos_color = 0xFFB2B1BD;
+            if (offset == 2) pos_color = 0xFF805B2B;
 
             double precise_targeted_height = lerp(rowHeight.getOrDefault(position.player_name, (double) offset  * 9), offset  * 9, 0.05);
             int derived_height = (int) Math.round(precise_targeted_height);
 
             PlayerListEntry playerListEntry = SWRC.minecraftClient.getNetworkHandler().getPlayerListEntry(position.player_name);
 
-            if (playerListEntry != null) {
-                PlayerSkinDrawer.draw(graphics, playerListEntry.getSkinTextures(), x + 12 + 6, y + 14 + derived_height + 4, 8);
-            }
+//            if (playerListEntry != null) {
+//                PlayerSkinDrawer.draw(graphics, playerListEntry.getSkinTextures(), x + 12 + 6, y + 14 + derived_height + 4, 8);
+//            }
 
             renderText(graphics, String.format("%s", offset + 1), x + 4, y + 14 + derived_height + 4, pos_color);
-            renderText(graphics, String.format("%s", position.player_name), x + 28, y + 14 + derived_height + 4, 0xFFFFFF);
+            renderText(graphics, String.format("%s", position.player_name), x + 28, y + 14 + derived_height + 4, 0xFFFFFFFF);
 
             int start_pos = width - widthOfText("-" + DeltaFormat.formatDelta(position.time_delta)) + 110;
 
             if (position.flap == -1) {
-                renderText(graphics, "-", x + start_pos - 30, y + 14 + derived_height + 4, 0xEBCC34 );
+                renderText(graphics, "-", x + start_pos - 30, y + 14 + derived_height + 4, 0xFFEBCC34 );
             } else {
                 if (position.time_delta == 0) {
                     renderText(
@@ -98,7 +99,7 @@ public class QualiLeaderboard implements Hud {
                             "INTERVAL",
                             x + start_pos + 26,
                             y + 14 + derived_height + 4,
-                            0xCCCCCC
+                            0xFFCCCCCC
                     );
                 } else {
                     renderText(
@@ -107,22 +108,27 @@ public class QualiLeaderboard implements Hud {
                             x + start_pos + 26,
                             y + 14 + derived_height + 4,
                             ColorUtil.lerpColor(
-                                    0xf5ee6a, // yellow
-                                    0xf56a6a, // red
+                                    0xFFf5ee6a, // yellow
+                                    0xFFf56a6a, // red
                                     clamp((float) Math.pow(2, position.time_delta / 60000f * -5), 0, 1)
                             )
                     );
                 }
 
-                renderText(graphics, String.format("%s", DeltaFormat.formatMillis(position.flap)), x + start_pos - 24, y + 14 + derived_height + 4, 0xEBCC34 );
+                renderText(graphics, String.format("%s", DeltaFormat.formatMillis(position.flap)), x + start_pos - 24, y + 14 + derived_height + 4, 0xFFEBCC34 );
 
                 last_delta = position.time_delta;
+            }
+
+            if (playerListEntry != null) {
+                PlayerSkinDrawer.draw(graphics, playerListEntry.getSkinTextures(), x + 12 + 6, y + 14 + derived_height + 4, 8);
             }
 
             rowHeight.put(position.player_name, precise_targeted_height);
 
             offset += 1;
         }
+        graphics.drawTexture(RenderPipelines.GUI_TEXTURED, WIDGETS_TEXTURE, x + 3, y + 3, 5, 0, 25, 10, 256, 256);
     }
 
     public static void renderText(DrawContext graphics, String text, int x, int y, int color) {

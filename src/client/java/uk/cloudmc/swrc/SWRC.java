@@ -3,9 +3,11 @@ package uk.cloudmc.swrc;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+//import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+//import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -70,16 +72,9 @@ public class SWRC implements ClientModInitializer {
 			race.update();
 		});
 
-		HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> {
-
-			layeredDrawer.addLayer(new IdentifiedLayer() {
-				@Override
-				public Identifier id() {
-					return Identifier.of(NAMESPACE, "hud");
-				}
-
-				@Override
-				public void render(DrawContext context, RenderTickCounter tickCounter) {
+		HudElementRegistry.addFirst(
+				Identifier.of(NAMESPACE, "hud"),
+				(context, tickCounter) -> {
 					if (raceLeaderboard.shouldRender()) {
 						raceLeaderboard.render(context, 0.0f);
 					}
@@ -105,8 +100,7 @@ public class SWRC implements ClientModInitializer {
 						statusHud.render(context, 0.0f);
 					}
 				}
-			});
-		});
+		);
 
 		WorldRenderEvents.LAST.register(trackBuilderRenderer);
 	}

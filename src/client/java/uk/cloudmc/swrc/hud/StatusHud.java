@@ -3,6 +3,7 @@ package uk.cloudmc.swrc.hud;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
+import org.joml.Matrix3x2fStack;
 import uk.cloudmc.swrc.SWRC;
 import uk.cloudmc.swrc.SWRCConfig;
 import uk.cloudmc.swrc.WebsocketManager;
@@ -109,35 +110,36 @@ public class StatusHud implements Hud {
         int scaledWidth = SWRC.minecraftClient.getWindow().getScaledWidth();
         int scaledHeight = SWRC.minecraftClient.getWindow().getScaledHeight();
 
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+       // RenderSystem.setShader(() -> GameRenderer.getPositionProgram());
 
-        MatrixStack matrixStack = context.getMatrices();
+        Matrix3x2fStack matrices = context.getMatrices();
 
          int x = 0;
          int y = scaledHeight - 10;
 
-        matrixStack.push();
-        matrixStack.translate(x, y, 0);
+        matrices.pushMatrix();
+        matrices.translate(x, y);
 
         for (StatusChip chip : this.statuses) {
             if (!chip.shouldRender()) {
                 continue;
             }
 
-            matrixStack.translate(0, -10, 0);
+            matrices.translate(0, -10);
 
             chip.render(context);
         }
 
-        matrixStack.pop();
+        matrices.popMatrix();
     }
 
     public static int drawTextWithBackground(DrawContext context, String text, int x, int y, int color, int padding) {
         int text_width = SWRC.minecraftClient.textRenderer.getWidth(text);
         int total_width = text_width + padding * 2;
 
+        context.drawText(SWRC.minecraftClient.textRenderer, text, x + padding, y + padding, 0xFFFFFFFF, true);
         context.fill(x, y, x + total_width, y + 10, color);
-        context.drawText(SWRC.minecraftClient.textRenderer, text, x + padding, y + padding, 0xFFFFFF, true);
+        //context.drawText(SWRC.minecraftClient.textRenderer, text, x + padding, y + padding, 0xFFFFFF, true);
 
         return total_width;
     }

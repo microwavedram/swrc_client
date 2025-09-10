@@ -39,7 +39,7 @@ public class EventsQueue implements Hud {
         this.scaledWidth = SWRC.minecraftClient.getWindow().getScaledWidth();
         this.scaledHeight = SWRC.minecraftClient.getWindow().getScaledHeight();
 
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+        //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         calculated_height = lerp(calculated_height, lines.size() * 9, 0.05);
 
@@ -48,7 +48,7 @@ public class EventsQueue implements Hud {
         for (Iterator<EventEntry> it = lines.descendingIterator(); it.hasNext(); ) {
             EventEntry entry = it.next();
 
-            context.drawTextWithShadow(SWRC.minecraftClient.textRenderer, entry.line, scaledWidth - widthOfText(entry.line) - 10, h, 0xFFFFFF);
+            context.drawTextWithShadow(SWRC.minecraftClient.textRenderer, entry.line, scaledWidth - widthOfText(entry.line) - 10, h, 0xFFFFFFFF);
 
             h += 9;
         }
