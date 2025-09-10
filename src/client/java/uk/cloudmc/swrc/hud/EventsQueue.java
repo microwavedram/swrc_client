@@ -1,6 +1,5 @@
 package uk.cloudmc.swrc.hud;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import uk.cloudmc.swrc.SWRC;
 

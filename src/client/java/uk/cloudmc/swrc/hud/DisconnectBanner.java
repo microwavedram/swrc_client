@@ -1,10 +1,7 @@
 package uk.cloudmc.swrc.hud;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 import uk.cloudmc.swrc.SWRC;
 
@@ -31,8 +28,6 @@ public class DisconnectBanner implements Hud {
 
         this.scaledWidth = SWRC.minecraftClient.getWindow().getScaledWidth();
         this.scaledHeight = SWRC.minecraftClient.getWindow().getScaledHeight();
-
-        //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         int u = 32;
         int v = 22;

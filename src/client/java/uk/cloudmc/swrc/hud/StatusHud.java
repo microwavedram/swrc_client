@@ -1,8 +1,6 @@
 package uk.cloudmc.swrc.hud;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix3x2fStack;
 import uk.cloudmc.swrc.SWRC;
 import uk.cloudmc.swrc.SWRCConfig;
@@ -110,8 +108,6 @@ public class StatusHud implements Hud {
         int scaledWidth = SWRC.minecraftClient.getWindow().getScaledWidth();
         int scaledHeight = SWRC.minecraftClient.getWindow().getScaledHeight();
 
-       // RenderSystem.setShader(() -> GameRenderer.getPositionProgram());
-
         Matrix3x2fStack matrices = context.getMatrices();
 
          int x = 0;
@@ -139,7 +135,6 @@ public class StatusHud implements Hud {
 
         context.drawText(SWRC.minecraftClient.textRenderer, text, x + padding, y + padding, 0xFFFFFFFF, true);
         context.fill(x, y, x + total_width, y + 10, color);
-        //context.drawText(SWRC.minecraftClient.textRenderer, text, x + padding, y + padding, 0xFFFFFF, true);
 
         return total_width;
     }

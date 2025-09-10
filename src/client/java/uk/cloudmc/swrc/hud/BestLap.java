@@ -1,10 +1,7 @@
 package uk.cloudmc.swrc.hud;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -42,8 +39,6 @@ public class BestLap implements Hud {
         int scaledWidth = SWRC.minecraftClient.getWindow().getScaledWidth();
         int scaledHeight = SWRC.minecraftClient.getWindow().getScaledHeight();
 
-        //DrawContext.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-
         int u = 32;
         int v = 0;
         int w = 192;
@@ -72,7 +67,6 @@ public class BestLap implements Hud {
                 0xFFFFFFFF,
                 SWRCConfig.getInstance().leaderboard_shadow
         );
-        //graphics.drawTexture(RenderPipelines.GUI_TEXTURED , WIDGETS_TEXTURE, scaledWidth / 2 - w / 2, animationHeight - h, u, v, w, h, 256, 256);
     }
 
     public void show(S2CUpdatePacket.Flap flap) {

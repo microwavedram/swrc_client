@@ -1,8 +1,6 @@
 package uk.cloudmc.swrc.hud;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix3x2fStack;
 import uk.cloudmc.swrc.SWRC;
 import uk.cloudmc.swrc.SWRCConfig;
@@ -27,8 +25,6 @@ public class TimerHud implements Hud {
             time_remaining = SWRC.getRace().getTimerDuration() * 1000;
         }
 
-        //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-
         Matrix3x2fStack matrixStack = context.getMatrices();
         matrixStack.pushMatrix();
 
@@ -42,7 +38,7 @@ public class TimerHud implements Hud {
                 label,
                 -SWRC.minecraftClient.textRenderer.getWidth(label),
                 0,
-                0xffffff,
+                0xFFFFFFFF,
                 SWRCConfig.getInstance().leaderboard_shadow
         );
 

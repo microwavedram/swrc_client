@@ -1,11 +1,9 @@
 package uk.cloudmc.swrc.hud;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 import uk.cloudmc.swrc.Race;
 import uk.cloudmc.swrc.SWRC;
@@ -39,8 +37,6 @@ public class QualiLeaderboard implements Hud {
     public void render(DrawContext graphics, float tickDelta) {
         Race race = SWRC.getRace();
 
-        //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-
         int width = 50;
         int body_height = SWRC.getRace().raceLeaderboardPositions.size() * 9 + 2;
         int x = 10;
@@ -51,10 +47,6 @@ public class QualiLeaderboard implements Hud {
         if (!race.raceLeaderboardPositions.isEmpty()) {
             race_lap = race.laps.getOrDefault(race.raceLeaderboardPositions.get(0).player_name, 0);
         }
-
-        //renderBox(graphics, WIDGETS_TEXTURE, 0, 0, x, y, 12, body_height, width);
-
-        //graphics.drawTexture(RenderPipelines.GUI_TEXTURED, WIDGETS_TEXTURE, x + 3, y + 3, 5, 0, 25, 10, 256, 256);
 
         String header = String.format(SWRCConfig.getInstance().header_text, SWRC.getRaceName());
 
@@ -80,10 +72,6 @@ public class QualiLeaderboard implements Hud {
             int derived_height = (int) Math.round(precise_targeted_height);
 
             PlayerListEntry playerListEntry = SWRC.minecraftClient.getNetworkHandler().getPlayerListEntry(position.player_name);
-
-//            if (playerListEntry != null) {
-//                PlayerSkinDrawer.draw(graphics, playerListEntry.getSkinTextures(), x + 12 + 6, y + 14 + derived_height + 4, 8);
-//            }
 
             renderText(graphics, String.format("%s", offset + 1), x + 4, y + 14 + derived_height + 4, pos_color);
             renderText(graphics, String.format("%s", position.player_name), x + 28, y + 14 + derived_height + 4, 0xFFFFFFFF);

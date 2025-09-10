@@ -1,9 +1,7 @@
 package uk.cloudmc.swrc.hud;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 import uk.cloudmc.swrc.Race;
 import uk.cloudmc.swrc.SWRC;
@@ -46,8 +44,6 @@ public class SplitTime implements Hud {
         long delta_to_infront = 0;
 
         if (race.laps.getOrDefault(SWRC.minecraftClient.player.getName().getString(), 0) > race.getTotalLaps()) return;
-
-        //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         if (selfPlace > 0) {
             long self_delta = race.raceLeaderboardPositions.get(selfPlace).time_delta;
@@ -98,9 +94,6 @@ public class SplitTime implements Hud {
             graphics.drawTexture(RenderPipelines.GUI_TEXTURED, WIDGETS_TEXTURE, x + bx + widthOfText(time_text) + 2, y, tx + 1, ty, 1, 10, 256, 256);
         }
 
-        /*renderText(graphics, time_text, x + 1, y + 1, 0xFFFFFF);
-        renderText(graphics, split_text, x + widthOfText(time_text) + 3, y + 1, 0xFFFFFF);
-        renderText(graphics, split_text, x + widthOfText(time_text) + 3, y + 1, 0xFFFFFF);*/
     }
 
     public static void renderText(DrawContext graphics, String text, int x, int y, int color) {
