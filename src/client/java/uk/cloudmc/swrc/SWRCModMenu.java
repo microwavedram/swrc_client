@@ -46,14 +46,19 @@ public class SWRCModMenu implements ModMenuApi {
                     .setSaveConsumer(newValue -> config.leaderboard_shadow = newValue)
                     .build());
 
-            Category.addEntry(packet.startBooleanToggle(Text.of("Render split times above player heads"), config.renderLapTimesAboveHeads)
+            Category.addEntry(packet.startBooleanToggle(Text.of("Render split times above player heads"), config.render_lap_times_above_heads)
                     .setDefaultValue(true)
-                    .setSaveConsumer(newValue -> config.renderLapTimesAboveHeads = newValue)
+                    .setSaveConsumer(newValue -> config.render_lap_times_above_heads = newValue)
                     .build());
 
             Category.addEntry(packet.startTextField(Text.of("Default Server"), config.default_server)
                     .setDefaultValue("wss://swrc.cloudmc.uk/realtime/")
                     .setSaveConsumer(newValue -> config.default_server = newValue)
+                    .build());
+
+            Category.addEntry(packet.startBooleanToggle(Text.of("Interpolation Compatibility (1.21.3+)"), config.interpolation_compat)
+                    .setDefaultValue(true)
+                    .setSaveConsumer(newValue -> config.interpolation_compat = newValue)
                     .build());
 
             return builder.build();

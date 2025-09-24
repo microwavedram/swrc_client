@@ -21,7 +21,8 @@ public class SWRCConfig implements ConfigData {
     public String header_text = "S3 @ %s";
     public boolean pos_tracking = true;
     public boolean leaderboard_shadow = true;
-    public boolean renderLapTimesAboveHeads = true;
+    public boolean render_lap_times_above_heads = true;
+    public boolean interpolation_compat = true;
 
     public String default_server = "wss://swrc.cloudmc.uk/realtime/";
 

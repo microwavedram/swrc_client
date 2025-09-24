@@ -41,7 +41,7 @@ public abstract class LivingEntityRenderMixin<T extends LivingEntity, S extends 
     private void renderLapTimeLabel(S renderState, MatrixStack matrices, VertexConsumerProvider vertices, int light, CallbackInfo ci) {
         if (!(renderState instanceof PlayerEntityRenderState playerState)) return;
         if (!(((Object) this) instanceof PlayerEntityRenderer renderer)) return;
-        if (!SWRCConfig.getInstance().renderLapTimesAboveHeads) return;
+        if (!SWRCConfig.getInstance().render_lap_times_above_heads) return;
         if (SWRC.minecraftClient.world == null || SWRC.getRace() == null) return;
 
         Race race = SWRC.getRace();
