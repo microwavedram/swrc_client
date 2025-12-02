@@ -4,7 +4,7 @@ SWRC (StoneWorks Race Control) is a Minecraft Java 1.21.4 mod built using the Fa
 
 Requirements
 
-    Minecraft Java Edition 1.21.4
+    Minecraft Java Edition 1.21.8
 
     Fabric Loader
 
@@ -16,7 +16,7 @@ Installation
 
     Download the latest release from the Releases section.
 
-    Install Fabric Loader for Minecraft 1.21.4.
+    Install Fabric Loader for Minecraft 1.21.8.
 
     Place the following .jar files in your .minecraft/mods folder:
 
