@@ -104,7 +104,8 @@ public class ServerCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Not connected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: SWRC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc", "to connect to the default server"));
         return 0;
     }
 
@@ -115,6 +116,7 @@ public class ServerCommand implements CommandNodeProvider {
 
             if (!WebsocketManager.swrcWebsocketConnection.sessions.containsKey(session)) {
                 context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Invalid session"));
+                context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc sessions", ""));
                 return 0;
             }
 
@@ -123,7 +125,8 @@ public class ServerCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Not connected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: SWRC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc", "to connect to the default server"));
         return 0;
     }
 
@@ -138,7 +141,8 @@ public class ServerCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Not connected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: SWRC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc", "to connect to the default server"));
         return 0;
     }
 
@@ -146,7 +150,8 @@ public class ServerCommand implements CommandNodeProvider {
         String server = StringArgumentType.getString(context, "uri");
 
         if (server.contains("http://") || server.contains("https://")) {
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Saisho please no"));
+            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Unsupported Protocol"));
+            context.getSource().sendFeedback(ChatFormatter.HINT("use ws:// or wss://"));
             return 0;
         }
 

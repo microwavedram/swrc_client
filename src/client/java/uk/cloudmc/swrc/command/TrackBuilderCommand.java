@@ -34,7 +34,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.*;
 public class TrackBuilderCommand implements CommandNodeProvider {
     @Override
     public LiteralArgumentBuilder<FabricClientCommandSource> command() {
-        return literal("track_builder")
+        return literal("track")
             .executes(this::doTrackBuilderData)
             .then(
                 literal("new")
@@ -150,7 +150,7 @@ public class TrackBuilderCommand implements CommandNodeProvider {
         if (trackBuilder != null) {
             SWRC.setTrackBuilder(null);
 
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Exited TrackBuilder"));
+            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Exited the track builder"));
             return Command.SINGLE_SUCCESS;
         }
 
@@ -204,7 +204,8 @@ public class TrackBuilderCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed to create a TrackBuilder as one is already active"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed to load a track as one is already active"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track exit", "to exit the current track"));
         return 0;
     }
 
@@ -237,7 +238,8 @@ public class TrackBuilderCommand implements CommandNodeProvider {
                             );
                         }
 
-                        mutableText = mutableText.append(Text.literal("Please choose wisely").styled(style -> style.withFormatting(Formatting.WHITE)));
+                        mutableText = mutableText.append(Text.literal("Please choose wisely\n").styled(style -> style.withFormatting(Formatting.WHITE)));
+                        mutableText = mutableText.append(Text.literal("(or go set it now)").styled(style -> style.withFormatting(Formatting.GRAY).withFormatting(Formatting.ITALIC)));
 
                         context.getSource().sendFeedback(
                                 mutableText
@@ -262,10 +264,16 @@ public class TrackBuilderCommand implements CommandNodeProvider {
             }
 
             context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("You need at least 1 checkpoint"));
+            if (trackBuilder.checkpointBuilder.canFinalize()) {
+                context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track checkpoint done", "to finalise your checkpoint"));
+            } else {
+                context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track checkpoint", "to make a new checkpoint"));
+            }
             return 0;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no TrackBuilder has been created"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no track is currently active"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track new ", "to initialize a new track"));
         return 0;
     }
 
@@ -296,7 +304,8 @@ public class TrackBuilderCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no TrackBuilder has been created"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no track is currently active"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track new ", "to initialize a new track"));
         return 0;
     }
 
@@ -323,7 +332,8 @@ public class TrackBuilderCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no TrackBuilder has been created"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no track is currently active"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track new ", "to initialize a new track"));
         return 0;
     }
 
@@ -346,7 +356,8 @@ public class TrackBuilderCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("No TrackBuilder has been created"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no track is currently active"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track new ", "to initialize a new track"));
         return 0;
     }
 
@@ -362,11 +373,13 @@ public class TrackBuilderCommand implements CommandNodeProvider {
                 return Command.SINGLE_SUCCESS;
             }
 
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as checkpoint is invalid"));
+            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as checkpoint can't be finalized"));
+            context.getSource().sendFeedback(ChatFormatter.HINT("make sure you have the left and right side of the checkpoint set"));
             return 0;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no TrackBuilder has been created"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no track is currently active"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track new ", "to initialize a new track"));
         return 0;
     }
 
@@ -382,12 +395,14 @@ public class TrackBuilderCommand implements CommandNodeProvider {
                 return Command.SINGLE_SUCCESS;
             }
 
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as trap exit is invalid"));
+            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as checkpoint can't be finalized"));
+            context.getSource().sendFeedback(ChatFormatter.HINT("make sure you have the left and right side of the checkpoint set"));
             return 0;
 
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no TrackBuilder has been created"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no track is currently active"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track new ", "to initialize a new track"));
         return 0;
     }
 
@@ -403,12 +418,14 @@ public class TrackBuilderCommand implements CommandNodeProvider {
                 return Command.SINGLE_SUCCESS;
             }
 
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as trap entrance is invalid"));
+            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as checkpoint can't be finalized"));
+            context.getSource().sendFeedback(ChatFormatter.HINT("make sure you have the left and right side of the checkpoint set"));
             return 0;
 
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no TrackBuilder has been created"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no track is currently active"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track new ", "to initialize a new track"));
         return 0;
     }
 
@@ -424,11 +441,13 @@ public class TrackBuilderCommand implements CommandNodeProvider {
                 return Command.SINGLE_SUCCESS;
             }
 
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as pit entrance is invalid"));
+            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as checkpoint can't be finalized"));
+            context.getSource().sendFeedback(ChatFormatter.HINT("make sure you have the left and right side of the checkpoint set"));
             return 0;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no TrackBuilder has been created"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no track is currently active"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track new ", "to initialize a new track"));
         return 0;
     }
 
@@ -444,11 +463,13 @@ public class TrackBuilderCommand implements CommandNodeProvider {
                 return Command.SINGLE_SUCCESS;
             }
 
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as pit is invalid"));
+            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as checkpoint can't be finalized"));
+            context.getSource().sendFeedback(ChatFormatter.HINT("make sure you have the left and right side of the checkpoint set"));
             return 0;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no TrackBuilder has been created"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no track is currently active"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track new ", "to initialize a new track"));
         return 0;
     }
 
@@ -458,20 +479,27 @@ public class TrackBuilderCommand implements CommandNodeProvider {
         assert SWRC.minecraftClient.player != null;
 
         if (trackBuilder != null) {
+            Vec3d position = SWRC.minecraftClient.player.getPos();
             if (trackBuilder.checkpointBuilder.hasActiveCheckpoint()) {
-                Vec3d position = SWRC.minecraftClient.player.getPos();
-
                 trackBuilder.checkpointBuilder.setRight(position);
 
-                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Set right at " + position.toString()));
-                return Command.SINGLE_SUCCESS;
+            } else {
+                trackBuilder.checkpointBuilder.newCheckpoint(_checkpoint -> {
+                    throw new AssertionError("this can't happen");
+                });
+
+                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Successfully created new checkpoint"));
+
+                trackBuilder.checkpointBuilder.setRight(position);
             }
 
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no checkpoint has been created"));
-            return 0;
+            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Set right at " + position.toString()));
+
+            return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no TrackBuilder has been created"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no track is currently active"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track new ", "to initialize a new track"));
         return 0;
     }
 
@@ -481,20 +509,27 @@ public class TrackBuilderCommand implements CommandNodeProvider {
         assert SWRC.minecraftClient.player != null;
 
         if (trackBuilder != null) {
+            Vec3d position = SWRC.minecraftClient.player.getPos();
             if (trackBuilder.checkpointBuilder.hasActiveCheckpoint()) {
-                Vec3d position = SWRC.minecraftClient.player.getPos();
-
                 trackBuilder.checkpointBuilder.setLeft(position);
 
-                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Set left at " + position.toString()));
-                return Command.SINGLE_SUCCESS;
+            } else {
+                trackBuilder.checkpointBuilder.newCheckpoint(_checkpoint -> {
+                    throw new AssertionError("this can't happen");
+                });
+
+                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Successfully created new checkpoint"));
+
+                trackBuilder.checkpointBuilder.setLeft(position);
             }
 
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no checkpoint has been created"));
-            return 0;
+            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Set left at " + position.toString()));
+
+            return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no TrackBuilder has been created"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no track is currently active"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track new ", "to initialize a new track"));
         return 0;
     }
 
@@ -510,12 +545,14 @@ public class TrackBuilderCommand implements CommandNodeProvider {
                 context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Successfully created new checkpoint"));
                 return Command.SINGLE_SUCCESS;
             } else {
-                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Current Checkpoint is not valid and can not be finalized"));
+                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as checkpoint can't be finalized"));
+                context.getSource().sendFeedback(ChatFormatter.HINT("make sure you have the left and right side of the checkpoint set"));
                 return 0;
             }
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no TrackBuilder has been created"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no track is currently active"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track new ", "to initialize a new track"));
         return 0;
     }
 
@@ -531,11 +568,21 @@ public class TrackBuilderCommand implements CommandNodeProvider {
                 return Command.SINGLE_SUCCESS;
             }
 
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as trap is invalid"));
+
+            if (trackBuilder.trapBuilder.getActiveTrap().enter == null && trackBuilder.trapBuilder.getActiveTrap().exit != null) {
+                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as trap is missing entrance"));
+                context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc track checkpoint trap enter", "to finalize the trap entrance"));
+            } else if (trackBuilder.trapBuilder.getActiveTrap().enter != null && trackBuilder.trapBuilder.getActiveTrap().exit == null) {
+                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as trap is missing exit"));
+                context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc track checkpoint trap exit", "to finalize the trap exit"));
+            } else {
+                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as trap isn't complete"));
+            }
             return 0;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no TrackBuilder has been created"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no track is currently active"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track new ", "to initialize a new track"));
         return 0;
     }
 
@@ -551,12 +598,21 @@ public class TrackBuilderCommand implements CommandNodeProvider {
                 context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Successfully created new trap"));
                 return Command.SINGLE_SUCCESS;
             } else {
-                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Current Trap is not valid and can not be finalized"));
+                if (trackBuilder.trapBuilder.getActiveTrap().enter == null && trackBuilder.trapBuilder.getActiveTrap().exit != null) {
+                    context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as previous trap is missing entrance"));
+                    context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc track checkpoint trap enter", "to finalize the trap entrance"));
+                } else if (trackBuilder.trapBuilder.getActiveTrap().enter != null && trackBuilder.trapBuilder.getActiveTrap().exit == null) {
+                    context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as previous trap is missing exit"));
+                    context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc track checkpoint trap exit", "to finalize the trap exit"));
+                } else {
+                    context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as trap isn't complete"));
+                }
                 return 0;
             }
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no TrackBuilder has been created"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no track is currently active"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track new ", "to initialize a new track"));
         return 0;
     }
 
@@ -570,16 +626,25 @@ public class TrackBuilderCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed to create a TrackBuilder as one is already active"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed to load a track as one is already active"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track exit", "to exit the current track"));
         return 0;
     }
 
     private int doTrackBuilderData(CommandContext<FabricClientCommandSource> context) {
         TrackBuilder trackBuilder = SWRC.getTrackBuilder();
         if (trackBuilder != null) {
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE(String.format("TrackBuilder active (id=%s, #checkpoints=%s)", trackBuilder.id, trackBuilder.numberOfCheckpoints())));
+            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE(String.format(
+                    "%s (#checkpoints=%s, #traps=%s, pit_enter=%s, pit_exit=%s)",
+                    trackBuilder.getName(),
+                    trackBuilder.numberOfCheckpoints(),
+                    trackBuilder.numberOfTraps(),
+                    trackBuilder.getPit() != null ? "Yes" : "No",
+                    trackBuilder.getPit() != null ? "Yes" : "No"
+             )));
         } else {
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("TrackBuilder not active"));
+            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as no track is currently active"));
+            context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("use", "/swrc track new ", "to initialize a new track"));
         }
 
         return Command.SINGLE_SUCCESS;

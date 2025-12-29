@@ -33,6 +33,10 @@ public class SWRCConfig implements ConfigData {
                 SWRC.LOGGER.warn("SWRC couldn't load the config, using defaults.");
                 instance = new SWRCConfig();
             }
+
+            if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+                instance.default_server = "ws://localhost:7777/";
+            }
         }
 
         return instance;

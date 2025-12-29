@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.*;
 
-public class RaceTimerCommand implements CommandNodeProvider {
+public class RaceCountdownTimerCommand implements CommandNodeProvider {
 
     @Override
     public LiteralArgumentBuilder<FabricClientCommandSource> command() {
@@ -43,7 +43,7 @@ public class RaceTimerCommand implements CommandNodeProvider {
             timerPacket.duration = -1;
             timerPacket.start_time = -1;
             WebsocketManager.rcWebsocketConnection.sendPacket(timerPacket);
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Send Request to stop the timer."));
+            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Stopping timer"));
             return Command.SINGLE_SUCCESS;
         }
         return 0;
@@ -55,7 +55,7 @@ public class RaceTimerCommand implements CommandNodeProvider {
             timerPacket.duration = SWRC.getRace().getTimerDuration();
             timerPacket.start_time = System.currentTimeMillis();
             WebsocketManager.rcWebsocketConnection.sendPacket(timerPacket);
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE(String.format("Send Request to start %s second(s) timer.", timerPacket.duration)));
+            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE(String.format("Starting %s second(s) timer.", timerPacket.duration)));
             return Command.SINGLE_SUCCESS;
         }
         return 0;
@@ -97,11 +97,12 @@ public class RaceTimerCommand implements CommandNodeProvider {
             timerPacket.duration = total_time;
             timerPacket.start_time = -1;
             WebsocketManager.rcWebsocketConnection.sendPacket(timerPacket);
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE(String.format("Send Request to make %s second(s) timer.", total_time)));
+            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE(String.format("Initialized %s second(s) timer.", timerPacket.duration)));
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("RC Websocket disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: RC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc server sessions", "and connecting"));
         return 0;
     }
 }

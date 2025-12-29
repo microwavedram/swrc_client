@@ -174,6 +174,8 @@ public class TrackBuilder {
         return checkpoints.size();
     }
 
+    public int numberOfTraps() { return traps.size(); }
+
     public Checkpoint getPit() {
         return pit;
     }

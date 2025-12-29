@@ -23,7 +23,8 @@ public class SWRCWebsocketConnection extends AbstractWebsocketConnection {
     public Map<String, S2CSessionsPacket.Session> sessions = new HashMap<>();
     public Double server_performance = null;
 
-    public String server_label = "no_motd";
+    public String server_label = "no_label";
+    public String motd = "no_motd";
 
     public SWRCWebsocketConnection(URI uri) {
         super(uri);
@@ -80,8 +81,7 @@ public class SWRCWebsocketConnection extends AbstractWebsocketConnection {
             sendPacket(handshake);
         }
         if (uPacket instanceof S2CHandshakePacket packet) {
-            SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("[SWRC] " + packet.motd));
-            SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("[SWRC] Connected to " + this.server_label));
+            motd = packet.motd;
         }
         if (uPacket instanceof S2CMessagePacket packet) {
             SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE(String.format("[SWRC] %s", packet.message)));
@@ -112,13 +112,20 @@ public class SWRCWebsocketConnection extends AbstractWebsocketConnection {
     }
 
     public void promptSessions() {
-        MutableText text = Text.empty()
-                .append(ChatFormatter.SWRC_PREFIX().append(" Connected to ").append(server_label));
+        MutableText text = Text.empty().styled(style -> style.withFormatting(Formatting.YELLOW))
+                .append(Text.literal(" - "))
+                .append(Text.literal(server_label).styled(style -> style.withFormatting(Formatting.GOLD)))
+                .append(Text.literal(" - "));
+
+
+        text.append(Text.literal("\n"));
+        text.append(Text.literal(motd));
+
 
         for (Map.Entry<String, S2CSessionsPacket.Session> session : sessions.entrySet()) {
             text = text.append(
-                Text.literal("\n > ")
-                    .append(Text.literal("[CONNECT] ").styled(style ->
+                Text.literal("\n ")
+                    .append(Text.literal("[JOIN] ").styled(style ->
                         style
                             .withFormatting(Formatting.GREEN)
                             .withHoverEvent(new HoverEvent.ShowText(
@@ -129,11 +136,11 @@ public class SWRCWebsocketConnection extends AbstractWebsocketConnection {
                             ))
                     ))
                     .append(Text.literal(session.getKey()).styled(style -> style.withFormatting(Formatting.AQUA)))
-                    .append(Text.literal(" - "))
-                    .append(Text.literal(session.getValue().state).styled(style -> style.withFormatting(Formatting.GOLD)))
-                    .append(Text.literal(" - "))
-                    .append(Text.literal(String.valueOf(session.getValue().perf)))
-                    .append(Text.literal("mspt"))
+                    .append(Text.literal(" "))
+                    .append(Text.literal(String.valueOf(session.getValue().perf)).styled(style -> style.withFormatting(Formatting.GRAY)))
+                    .append(Text.literal("mspt").styled(style -> style.withFormatting(Formatting.GRAY)))
+                    .append(Text.literal(" "))
+                        .append(Text.literal("Probably racing or something!").styled(style -> style.withFormatting(Formatting.YELLOW)))
                     .append("\n")
             );
         }

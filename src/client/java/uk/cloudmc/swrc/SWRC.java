@@ -1,5 +1,6 @@
 package uk.cloudmc.swrc;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -10,6 +11,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.cloudmc.swrc.command.RaceCommand;
 import uk.cloudmc.swrc.command.RootCommand;
 import uk.cloudmc.swrc.hud.*;
 import uk.cloudmc.swrc.render.TrackBuilderRenderer;
@@ -56,7 +58,10 @@ public class SWRC implements ClientModInitializer {
 		}
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-			dispatcher.register(new RootCommand().command());
+			RootCommand rootCommand = new RootCommand();
+			dispatcher.register(rootCommand.command());
+			dispatcher.register(rootCommand.raceCommand.command());
+			dispatcher.register(rootCommand.trackBuilderCommand.command());
 		});
 
 		ClientTickEvents.START_CLIENT_TICK.register(client -> {
@@ -71,28 +76,28 @@ public class SWRC implements ClientModInitializer {
 				Identifier.of(NAMESPACE, "hud"),
 				(context, tickCounter) -> {
 					if (raceLeaderboard.shouldRender()) {
-						raceLeaderboard.render(context, 0.0f);
+						raceLeaderboard.render(context, tickCounter);
 					}
 					if (qualiLeaderboard.shouldRender()) {
-						qualiLeaderboard.render(context, 0.0f);
+						qualiLeaderboard.render(context, tickCounter);
 					}
 					if (splitTime.shouldRender()) {
-						splitTime.render(context, 0.0f);
+						splitTime.render(context, tickCounter);
 					}
 					if (bestLap.shouldRender()) {
-						bestLap.render(context, 0.0f);
+						bestLap.render(context, tickCounter);
 					}
 					if (timerHud.shouldRender()) {
-						timerHud.render(context, 0.0f);
+						timerHud.render(context, tickCounter);
 					}
 					if (eventsQueue.shouldRender()) {
-						eventsQueue.render(context, 0.0f);
+						eventsQueue.render(context, tickCounter);
 					}
 					if (disconnectBanner.shouldRender()) {
-						disconnectBanner.render(context, 0.0f);
+						disconnectBanner.render(context, tickCounter);
 					}
 					if (statusHud.shouldRender()) {
-						statusHud.render(context, 0.0f);
+						statusHud.render(context, tickCounter);
 					}
 				}
 		);

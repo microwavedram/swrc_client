@@ -278,7 +278,7 @@ RaceCommand implements CommandNodeProvider {
                     )
                 )
             )
-            .then(new RaceTimerCommand().command());
+            .then(new RaceCountdownTimerCommand().command());
     }
 
     private int doSendToBack(CommandContext<FabricClientCommandSource> context) {
@@ -287,7 +287,8 @@ RaceCommand implements CommandNodeProvider {
         if (WebsocketManager.rcSocketAvalible()) {
 
             if (SWRC.getRace() == null) {
-                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("No active race"));
+                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as there isn't a race active"));
+                context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc race load ", "with a race id and a track file"));
                 return 0;
             }
 
@@ -302,7 +303,8 @@ RaceCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("RC Websocket disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: RC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc server sessions", "and connecting"));
         return 0;
     }
 
@@ -338,7 +340,8 @@ RaceCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("RC Websocket disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: RC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc server sessions", "and connecting"));
         return 0;
     }
 
@@ -348,7 +351,8 @@ RaceCommand implements CommandNodeProvider {
         if (WebsocketManager.rcSocketAvalible()) {
 
             if (SWRC.getRace() == null) {
-                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("No active race"));
+                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as there isn't a race active"));
+                context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc race load ", "with a race id and a track file"));
                 return 0;
             }
 
@@ -363,7 +367,8 @@ RaceCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("RC Websocket disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: RC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc server sessions", "and connecting"));
         return 0;
     }
 
@@ -375,7 +380,8 @@ RaceCommand implements CommandNodeProvider {
         if (WebsocketManager.rcSocketAvalible()) {
 
             if (SWRC.getRace() == null) {
-                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("No active race"));
+                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as there isn't a race active"));
+                context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc race load ", "with a race id and a track file"));
                 return 0;
             }
 
@@ -418,7 +424,8 @@ RaceCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("RC Websocket disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: RC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc server sessions", "and connecting"));
         return 0;
     }
 
@@ -426,7 +433,8 @@ RaceCommand implements CommandNodeProvider {
         if (WebsocketManager.rcSocketAvalible()) {
 
             if (SWRC.getRace() == null) {
-                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("No active race"));
+                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as there isn't a race active"));
+                context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc race load ", "with a race id and a track file"));
                 return 0;
             }
 
@@ -441,7 +449,8 @@ RaceCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("RC Websocket disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: RC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc server sessions", "and connecting"));
         return 0;
     }
 
@@ -449,7 +458,8 @@ RaceCommand implements CommandNodeProvider {
         if (WebsocketManager.rcSocketAvalible()) {
 
             if (SWRC.getRace() == null) {
-                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("No active race"));
+                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as there isn't a race active"));
+                context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc race load ", "with a race id and a track file"));
                 return 0;
             }
 
@@ -464,7 +474,8 @@ RaceCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("RC Websocket disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: RC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc server sessions", "and connecting"));
         return 0;
     }
 
@@ -473,7 +484,8 @@ RaceCommand implements CommandNodeProvider {
             assert SWRC.minecraftClient.player != null;
 
             if (SWRC.getRace() == null) {
-                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("No active race"));
+                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed as there isn't a race active"));
+                context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc race load ", "with a race id and a track file"));
                 return 0;
             }
 
@@ -503,7 +515,8 @@ RaceCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("RC Websocket disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: RC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc server sessions", "and connecting"));
         return 0;
     }
 
@@ -517,7 +530,8 @@ RaceCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("RC Websocket disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: RC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc server sessions", "and connecting"));
         return 0;
     }
 
@@ -609,7 +623,8 @@ RaceCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("RC Websocket disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: RC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc server sessions", "and connecting"));
         return 0;
     }
 
@@ -640,7 +655,8 @@ RaceCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("RC Websocket disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: RC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc server sessions", "and connecting"));
         return 0;
     }
 
@@ -670,7 +686,8 @@ RaceCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("RC Websocket disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: RC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc server sessions", "and connecting"));
         return 0;
     }
 
@@ -712,7 +729,8 @@ RaceCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("RC Websocket disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: RC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc server sessions", "and connecting"));
         return 0;
     }
 
@@ -755,7 +773,8 @@ RaceCommand implements CommandNodeProvider {
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("RC Websocket disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: RC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc server sessions", "and connecting"));
          return 0;
     }
 
@@ -770,11 +789,12 @@ RaceCommand implements CommandNodeProvider {
 
             WebsocketManager.rcWebsocketConnection.sendPacket(packet);
 
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE(String.format("Send Request to remove %s", player_name)));
+            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE(String.format("Removing %s", player_name)));
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("RC Websocket disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: RC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc server sessions", "and connecting"));
         return 0;
     }
 
@@ -791,11 +811,12 @@ RaceCommand implements CommandNodeProvider {
 
             PlayerNameValidator.validateName(player_name);
 
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE(String.format("Send Request to add %s", player_name)));
+            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE(String.format("Adding %s", player_name)));
             return Command.SINGLE_SUCCESS;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("RC Websocket disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: RC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc server sessions", "and connecting"));
         return 0;
     }
 
@@ -831,28 +852,28 @@ RaceCommand implements CommandNodeProvider {
     }
 
     public static int doUpdateRaceState(CommandContext<FabricClientCommandSource> context, Race.RaceState state) {
-        Race activeRace = SWRC.getRace();
 
-        if (activeRace != null) {
-            if (WebsocketManager.rcSocketAvalible()) {
+        if (WebsocketManager.rcSocketAvalible()) {
+            Race activeRace = SWRC.getRace();
+
+            if (activeRace != null) {
                 C2SRaceState packet = new C2SRaceState();
 
                 packet.state = state;
 
                 WebsocketManager.rcWebsocketConnection.sendPacket(packet);
 
-                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE(String.format("Sending request to update state to %s", state)));
+                context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE(String.format("Updating state to %s", state)));
 
                 return Command.SINGLE_SUCCESS;
             }
 
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("RC Socket not available"));
-
+            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("No active race present"));
             return 0;
         }
 
-        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("No active race present"));
-
+        context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE("Failed: RC Socket Disconnected"));
+        context.getSource().sendFeedback(ChatFormatter.HINT_COMMAND("try", "/swrc server sessions", "and connecting"));
         return 0;
     }
 }
