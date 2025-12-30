@@ -10,6 +10,7 @@ import uk.cloudmc.swrc.SWRC;
 import uk.cloudmc.swrc.SWRCConfig;
 import uk.cloudmc.swrc.net.packets.*;
 import uk.cloudmc.swrc.util.ChatFormatter;
+import uk.cloudmc.swrc.util.NTPTimeSync;
 
 import java.net.URI;
 import java.nio.ByteBuffer;
@@ -77,6 +78,8 @@ public class SWRCWebsocketConnection extends AbstractWebsocketConnection {
             handshake.username = SWRC.minecraftClient.player.getName().getString();
             handshake.uuid = SWRC.minecraftClient.player.getUuidAsString();
             handshake.version = SWRC.VERSION;
+            handshake.clock_precise = NTPTimeSync.isPrecise();
+            handshake.clock_precision = NTPTimeSync.getOffset();
 
             sendPacket(handshake);
         }
@@ -102,8 +105,6 @@ public class SWRCWebsocketConnection extends AbstractWebsocketConnection {
 
             SWRCConfig.getInstance().race_key = packet.race_key;
             SWRCConfig.getInstance().save();
-
-            SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("Race Key saved to config"));
 
             GLFW.glfwSetClipboardString(SWRC.minecraftClient.getWindow().getHandle(), packet.race_key);
 
@@ -137,11 +138,12 @@ public class SWRCWebsocketConnection extends AbstractWebsocketConnection {
                     ))
                     .append(Text.literal(session.getKey()).styled(style -> style.withFormatting(Formatting.AQUA)))
                     .append(Text.literal(" "))
-                    .append(Text.literal(String.valueOf(session.getValue().perf)).styled(style -> style.withFormatting(Formatting.GRAY)))
+                    .append(Text.literal(String.format("%.3f", session.getValue().perf)).styled(style -> style.withFormatting(Formatting.GRAY)))
                     .append(Text.literal("mspt").styled(style -> style.withFormatting(Formatting.GRAY)))
                     .append(Text.literal(" "))
-                        .append(Text.literal("Probably racing or something!").styled(style -> style.withFormatting(Formatting.YELLOW)))
-                    .append("\n")
+                    .append(Text.literal(session.getValue().state != null ? session.getValue().state : "-").styled(style -> style.withFormatting(Formatting.GRAY)))
+                    .append(Text.literal(" "))
+                    .append(Text.literal(session.getValue().status != null ? session.getValue().status : "-").styled(style -> style.withFormatting(Formatting.YELLOW)))
             );
         }
 

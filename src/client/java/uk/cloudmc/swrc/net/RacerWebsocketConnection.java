@@ -51,8 +51,6 @@ public class RacerWebsocketConnection extends AbstractWebsocketConnection {
     @Override
     public void onPacket(Packet<?> uPacket) {
         if (uPacket instanceof S2CHelloPacket packet) {
-            SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("[Racer] Successfully connected to server."));
-
             C2SHandshakePacket handshake = new C2SHandshakePacket();
 
             assert SWRC.minecraftClient.player != null;
@@ -64,8 +62,7 @@ public class RacerWebsocketConnection extends AbstractWebsocketConnection {
             sendPacket(handshake);
         }
         if (uPacket instanceof S2CHandshakePacket packet) {
-            SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("[Racer] " + packet.motd));
-            SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("[Racer] Authenticated."));
+            SWRC.minecraftClient.inGameHud.getChatHud().addMessage(ChatFormatter.GENERIC_MESSAGE("[Racer] Authenticated: " + packet.motd));
         }
         if (uPacket instanceof S2CNewRacePacket packet) {
 
@@ -84,6 +81,13 @@ public class RacerWebsocketConnection extends AbstractWebsocketConnection {
                 current_race.setLapCounts(packet.racer_laps);
                 current_race.setStartTime(packet.timer_start);
                 current_race.getTimerDuration(packet.timer_duration);
+                current_race.racer_clients = packet.racer_clients;
+                current_race.rc_clients = packet.rc_clients;
+
+                var us = packet.rc_clients.get(SWRC.minecraftClient.player.getName().getString());
+                if (us != null) {
+                    current_race.probably_tracking = us.tracking;
+                }
 
                 if (packet.flap != null && (current_race.flap == null || current_race.flap.hashCode() != packet.flap.hashCode())) SWRC.bestLap.show(packet.flap);
 

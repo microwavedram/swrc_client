@@ -1,36 +1,10 @@
 # SWRC Mod
 
-SWRC (StoneWorks Race Control) is a Minecraft Java 1.21.4 mod built using the Fabric modloader. It adds Boat Racing Control via waypoints and the ability to create tracks and operate races
+SWRC is a minecraft client modification that allows for the operation of racing on public servers. It utilises [a central server](https://github.com/microwavedram/swrc_server) for syncronisation of race data between clients. It supports multiple race controller, and provides functionality for spectators and racers.
 
-Requirements
+Keys host races on the central server are available on request. 
 
-    Minecraft Java Edition 1.21.4
+Contributors:
+- SaishoVibes
 
-    Fabric Loader
-
-    Fabric API
-
-    Cloth Config API
-
-Installation
-
-    Download the latest release from the Releases section.
-
-    Install Fabric Loader for Minecraft 1.21.4.
-
-    Place the following .jar files in your .minecraft/mods folder:
-
-        swrc-x.x.x.jar
-
-        fabric-api-x.x.x.jar
-
-        cloth-config-x.x.x.jar
-
-    Launch Minecraft with the Fabric profile.
-
-This mod is a work-in-progress. Expect frequent updates. Feedback is appreciated!
-See the LICENSE file for more information.
-Credits
-
-    SaishoVibes
-    localhackerman
+*The NTP Synchronisation is derived with permission from "Bodkin Boats" by BillBodkin*

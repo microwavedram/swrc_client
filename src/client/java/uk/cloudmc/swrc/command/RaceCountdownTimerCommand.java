@@ -9,6 +9,7 @@ import uk.cloudmc.swrc.SWRC;
 import uk.cloudmc.swrc.WebsocketManager;
 import uk.cloudmc.swrc.net.packets.C2STimerPacket;
 import uk.cloudmc.swrc.util.ChatFormatter;
+import uk.cloudmc.swrc.util.NTPTimeSync;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,7 +54,7 @@ public class RaceCountdownTimerCommand implements CommandNodeProvider {
         if (WebsocketManager.rcSocketAvalible()) {
             C2STimerPacket timerPacket = new C2STimerPacket();
             timerPacket.duration = SWRC.getRace().getTimerDuration();
-            timerPacket.start_time = System.currentTimeMillis();
+            timerPacket.start_time = NTPTimeSync.getTrueTime();
             WebsocketManager.rcWebsocketConnection.sendPacket(timerPacket);
             context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE(String.format("Starting %s second(s) timer.", timerPacket.duration)));
             return Command.SINGLE_SUCCESS;

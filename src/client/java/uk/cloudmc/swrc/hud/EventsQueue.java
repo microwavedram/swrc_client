@@ -1,14 +1,15 @@
 package uk.cloudmc.swrc.hud;
 
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderTickCounter;
 import uk.cloudmc.swrc.SWRC;
+import uk.cloudmc.swrc.SWRCConfig;
+import uk.cloudmc.swrc.util.NTPTimeSync;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class EventsQueue implements Hud {
-    private int scaledWidth;
-    private int scaledHeight;
 
     private static final ConcurrentLinkedDeque<EventEntry> lines = new ConcurrentLinkedDeque<>();
 
@@ -22,7 +23,7 @@ public class EventsQueue implements Hud {
 
     @Override
     public boolean shouldRender() {
-        return SWRC.getRace() != null && !lines.isEmpty();
+        return SWRC.getRace() != null && !lines.isEmpty() && SWRCConfig.getInstance().renderEventFeed;
     }
 
     public static int widthOfText(String text) {
@@ -30,23 +31,19 @@ public class EventsQueue implements Hud {
     }
 
     public void addLine(String line) {
-        lines.add(new EventEntry(line, System.currentTimeMillis() + 10000));
+        lines.add(new EventEntry(line, NTPTimeSync.getTrueTime() + 10000));
     }
 
     @Override
-    public void render(DrawContext context, float tickDelta) {
-        this.scaledWidth = SWRC.minecraftClient.getWindow().getScaledWidth();
-        this.scaledHeight = SWRC.minecraftClient.getWindow().getScaledHeight();
-
-        //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+    public void $render(DrawContext context, RenderTickCounter tickDelta) {
+        final int scaledWidth = SWRC.minecraftClient.getWindow().getScaledWidth();
+        final int scaledHeight = SWRC.minecraftClient.getWindow().getScaledHeight();
 
         calculated_height = lerp(calculated_height, lines.size() * 9, 0.05);
 
         int h = scaledHeight - (int) Math.round(calculated_height) - 10;
 
-        for (Iterator<EventEntry> it = lines.descendingIterator(); it.hasNext(); ) {
-            EventEntry entry = it.next();
-
+        for (EventEntry entry : lines) {
             context.drawTextWithShadow(SWRC.minecraftClient.textRenderer, entry.line, scaledWidth - widthOfText(entry.line) - 10, h, 0xFFFFFFFF);
 
             h += 9;
@@ -54,7 +51,7 @@ public class EventsQueue implements Hud {
 
         EventEntry eventEntry = lines.peekFirst();
 
-        if (eventEntry != null && eventEntry.expiry < System.currentTimeMillis()) {
+        if (eventEntry != null && eventEntry.expiry < NTPTimeSync.getTrueTime()) {
             lines.removeFirst();
         }
     }

@@ -14,6 +14,8 @@ public class C2SHandshakePacket extends Packet<C2SHandshakePacket> {
     @Expose public String username;
     @Expose public String uuid;
     @Expose public String version;
+    @Expose public boolean clock_precise;
+    @Expose public long clock_precision;
 
     @Override
     public String toString() {

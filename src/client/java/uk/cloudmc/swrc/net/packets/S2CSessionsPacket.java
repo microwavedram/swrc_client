@@ -16,6 +16,7 @@ public class S2CSessionsPacket extends Packet<S2CSessionsPacket> {
 
     public static class Session {
         @Expose public String state;
+        @Expose public String status;
         @Expose public double perf;
     }
 

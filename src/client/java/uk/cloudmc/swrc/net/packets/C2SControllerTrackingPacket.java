@@ -5,19 +5,21 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 
-public class C2SCreateNewSessionPacket extends Packet<C2SCreateNewSessionPacket> {
-    public static final char packetId = 0x40;
+public class C2SControllerTrackingPacket extends Packet<C2SControllerTrackingPacket> {
+    public static final char packetId = 0x17;
 
     private final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-    @Expose public String key;
+    @Expose public String controller;
+    @Expose public boolean state;
 
     @Override
     public String toString() {
-        return "C2SCreateNewSessionPacket{" +
-                ", key='" + key + '\'' +
+        return "C2SControllerTrackingPacket{" +
+                "gson=" + gson +
+                ", controller='" + controller + '\'' +
+                ", state=" + state +
                 '}';
     }
 
@@ -27,8 +29,8 @@ public class C2SCreateNewSessionPacket extends Packet<C2SCreateNewSessionPacket>
     }
 
     @Override
-    public C2SCreateNewSessionPacket fromBytes(byte[] data) {
-        return gson.fromJson(new String(data, StandardCharsets.UTF_8), C2SCreateNewSessionPacket.class);
+    public C2SControllerTrackingPacket fromBytes(byte[] data) {
+        return gson.fromJson(new String(data, StandardCharsets.UTF_8), C2SControllerTrackingPacket.class);
     }
 
     @Override

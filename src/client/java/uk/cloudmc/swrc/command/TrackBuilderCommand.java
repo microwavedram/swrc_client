@@ -165,8 +165,6 @@ public class TrackBuilderCommand implements CommandNodeProvider {
         if (trackBuilder == null) {
             String filename = target + ".json";
 
-            context.getSource().sendFeedback(ChatFormatter.GENERIC_MESSAGE(String.format("Reading from config/swrc/tracks/%s", filename)));
-
             try {
                 String content = Files.readString(FabricLoader.getInstance().getConfigDir().resolve(SWRC.NAMESPACE).resolve("tracks").resolve(filename));
 

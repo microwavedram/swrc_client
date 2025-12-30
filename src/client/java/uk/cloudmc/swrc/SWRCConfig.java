@@ -16,12 +16,19 @@ public class SWRCConfig implements ConfigData {
 
     private static SWRCConfig instance;
 
+    public String ntp_server = "pool.ntp.org";
     public String swrc_key = "";
     public String race_key = "";
-    public String header_text = "S3 @ %s";
-    public boolean pos_tracking = true;
     public boolean leaderboard_shadow = true;
     public boolean renderLapTimesAboveHeads = true;
+    public boolean renderEventFeed = true;
+
+    public double split_hud_x = 0.5;
+    public double split_hud_y = 0.6;
+
+    public double leaderboard_x = 0;
+    public double leaderboard_y = 0;
+    public double leaderboard_scale = 1.0;
 
     public String default_server = "wss://swrc.cloudmc.uk/realtime/";
 
@@ -32,10 +39,6 @@ public class SWRCConfig implements ConfigData {
             } catch (IOException exception) {
                 SWRC.LOGGER.warn("SWRC couldn't load the config, using defaults.");
                 instance = new SWRCConfig();
-            }
-
-            if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-                instance.default_server = "ws://localhost:7777/";
             }
         }
 

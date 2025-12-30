@@ -1,10 +1,12 @@
 package uk.cloudmc.swrc.hud;
 
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderTickCounter;
 import org.joml.Matrix3x2fStack;
 import uk.cloudmc.swrc.SWRC;
 import uk.cloudmc.swrc.SWRCConfig;
 import uk.cloudmc.swrc.util.DeltaFormat;
+import uk.cloudmc.swrc.util.NTPTimeSync;
 
 public class TimerHud implements Hud {
 
@@ -14,11 +16,11 @@ public class TimerHud implements Hud {
     }
 
     @Override
-    public void render(DrawContext context, float tickDelta) {
+    public void $render(DrawContext context, RenderTickCounter tickDelta) {
         int scaledWidth = SWRC.minecraftClient.getWindow().getScaledWidth();
         int scaledHeight = SWRC.minecraftClient.getWindow().getScaledHeight();
 
-        long time_current = System.currentTimeMillis();
+        long time_current = NTPTimeSync.getTrueTime();
         long time_remaining = Math.min(Math.max(SWRC.getRace().getTimerDuration() * 1000 - (time_current - SWRC.getRace().getTimerStart()), 0), SWRC.getRace().getTimerDuration() * 1000);
 
         if (SWRC.getRace().getTimerStart() == -1) {

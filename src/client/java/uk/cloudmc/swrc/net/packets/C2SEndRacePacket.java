@@ -1,5 +1,6 @@
 package uk.cloudmc.swrc.net.packets;
 
+import com.google.gson.annotations.Expose;
 import uk.cloudmc.swrc.track.Track;
 
 import java.nio.charset.StandardCharsets;
@@ -7,9 +8,13 @@ import java.nio.charset.StandardCharsets;
 public class C2SEndRacePacket extends Packet<C2SEndRacePacket> {
     public static final char packetId = 0x11;
 
+    @Expose
+    public boolean dump = false;
+
     @Override
     public String toString() {
-        return "S2CEndRacePacket{" +
+        return "C2SEndRacePacket{" +
+                "dump=" + dump +
                 '}';
     }
 

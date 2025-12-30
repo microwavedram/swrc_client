@@ -4,7 +4,9 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
+import org.joml.Matrix3x2fStack;
 import uk.cloudmc.swrc.Race;
 import uk.cloudmc.swrc.SWRC;
 import uk.cloudmc.swrc.SWRCConfig;
@@ -19,104 +21,131 @@ import static net.minecraft.util.math.MathHelper.clamp;
 public class QualiLeaderboard implements Hud {
 
     private static final Identifier WIDGETS_TEXTURE = Identifier.of(SWRC.NAMESPACE, "textures/widgets.png");
-
     private static final HashMap<String, Double> rowHeight = new HashMap<>();
+
+    private static final int COLOR_GOLD = 0xFFFCBA03;
+    private static final int COLOR_SILVER = 0xFFB2B1BD;
+    private static final int COLOR_BRONZE = 0xFF805B2B;
+    private static final int COLOR_WHITE = 0xFFFFFFFF;
+    private static final int COLOR_LIGHT_GRAY = 0xFFCCCCCC;
+    private static final int COLOR_FLAP_YELLOW = 0xFFEBCC34;
+    private static final int COLOR_YELLOW_LERP = 0xFFf5ee6a;
+    private static final int COLOR_RED_LERP = 0xFFf56a6a;
+
+    private static final String STR_INTERVAL = "INTERVAL";
+    private static final String STR_DASH = "-";
+
+    private static int cachedDashWidth = -1;
+
+    private static final double LERP_SPEED = 0.05;
 
     public QualiLeaderboard() {}
 
-    private double lerp(double a, double b, double t) {
+    private static double lerp(double a, double b, double t) {
         return a + (b - a) * t;
     }
 
     @Override
     public boolean shouldRender() {
-        return SWRC.getRace() != null && SWRC.getRace().getRaceState() == Race.RaceState.QUALI;
+        Race race = SWRC.getRace();
+        return race != null && race.getRaceState() == Race.RaceState.QUALI;
     }
 
     @Override
-    public void render(DrawContext graphics, float tickDelta) {
+    public void $render(DrawContext context, RenderTickCounter tickDelta) {
         Race race = SWRC.getRace();
 
-        int width = 50;
-        int body_height = SWRC.getRace().raceLeaderboardPositions.size() * 9 + 2;
-        int x = 10;
-        int y = 10;
+        Matrix3x2fStack stack = context.getMatrices();
 
-        int race_lap = 0;
+        stack.pushMatrix();
+        stack.scale((float) SWRCConfig.getInstance().leaderboard_scale);
+
+        final int baseX = (int) (context.getScaledWindowWidth() * SWRCConfig.getInstance().leaderboard_x) + 10;
+        final int baseY = (int) (context.getScaledWindowHeight() * SWRCConfig.getInstance().leaderboard_y) + 10;
+        final int textYOffset = 18;
+
+        if (cachedDashWidth == -1) {
+            cachedDashWidth = widthOfText(STR_DASH);
+        }
+
+        int width = 50;
+        int raceLap = 0;
 
         if (!race.raceLeaderboardPositions.isEmpty()) {
-            race_lap = race.laps.getOrDefault(race.raceLeaderboardPositions.get(0).player_name, 0);
+            raceLap = race.laps.getOrDefault(race.raceLeaderboardPositions.get(0).player_name, 0);
         }
 
-        String header = String.format(SWRCConfig.getInstance().header_text, SWRC.getRaceName());
+        String header = "Quali at " + SWRC.getRaceName();
+        renderText(context, header, baseX + 32, baseY + 5, COLOR_WHITE);
 
-        renderText(graphics, header, x + 32, y + 5, 0xFFFFFFFF);
-
-        renderText(graphics, String.format("Lap %s / %s", race_lap, race.getTotalLaps()), x + 46 + widthOfText(header), y + 5, 0xFFFFFFFF);
+        String lapInfo = "Lap " + raceLap + " / " + race.getTotalLaps();
+        renderText(context, lapInfo, baseX + 46 + widthOfText(header), baseY + 5, COLOR_WHITE);
 
         for (S2CUpdatePacket.RaceLeaderboardPosition position : race.raceLeaderboardPositions) {
-            width = Math.max(width, widthOfText(position.player_name));
+            int nameWidth = widthOfText(position.player_name);
+            if (nameWidth > width) {
+                width = nameWidth;
+            }
         }
 
-        long last_delta = 0;
+        final boolean hasShadow = SWRCConfig.getInstance().leaderboard_shadow;
 
         int offset = 0;
+
         for (S2CUpdatePacket.RaceLeaderboardPosition position : race.raceLeaderboardPositions) {
-            int pos_color = 0xFFFFFFFF;
+            final String playerName = position.player_name;
 
-            if (offset == 0) pos_color = 0xFFFCBA03;
-            if (offset == 1) pos_color = 0xFFB2B1BD;
-            if (offset == 2) pos_color = 0xFF805B2B;
+            int posColor = COLOR_WHITE;
+            if (offset == 0) posColor = COLOR_GOLD;
+            else if (offset == 1) posColor = COLOR_SILVER;
+            else if (offset == 2) posColor = COLOR_BRONZE;
 
-            double precise_targeted_height = lerp(rowHeight.getOrDefault(position.player_name, (double) offset  * 9), offset  * 9, 0.05);
-            int derived_height = (int) Math.round(precise_targeted_height);
+            double currentHeight = rowHeight.getOrDefault(playerName, (double) (offset * 9));
+            double targetHeight = offset * 9.0;
+            double preciseHeight = lerp(currentHeight, targetHeight, LERP_SPEED);
+            int derivedHeight = (int) Math.round(preciseHeight);
 
-            PlayerListEntry playerListEntry = SWRC.minecraftClient.getNetworkHandler().getPlayerListEntry(position.player_name);
+            final int rowY = baseY + textYOffset + derivedHeight;
 
-            renderText(graphics, String.format("%s", offset + 1), x + 4, y + 14 + derived_height + 4, pos_color);
-            renderText(graphics, String.format("%s", position.player_name), x + 28, y + 14 + derived_height + 4, 0xFFFFFFFF);
+            renderTextDirect(context, Integer.toString(offset + 1), baseX + 4, rowY, posColor, hasShadow);
 
-            int start_pos = width - widthOfText("-" + DeltaFormat.formatDelta(position.time_delta)) + 110;
+            renderTextDirect(context, playerName, baseX + 28, rowY, COLOR_WHITE, hasShadow);
+
+            int startPos = width - widthOfText(STR_DASH + DeltaFormat.formatDelta(position.time_delta)) + 110;
 
             if (position.flap == -1) {
-                renderText(graphics, "-", x + start_pos - 30, y + 14 + derived_height + 4, 0xFFEBCC34 );
+                renderTextDirect(context, STR_DASH, baseX + startPos - 30, rowY, COLOR_FLAP_YELLOW, hasShadow);
             } else {
                 if (position.time_delta == 0) {
-                    renderText(
-                            graphics,
-                            "INTERVAL",
-                            x + start_pos + 26,
-                            y + 14 + derived_height + 4,
-                            0xFFCCCCCC
-                    );
+                    renderTextDirect(context, STR_INTERVAL, baseX + startPos + 26, rowY, COLOR_LIGHT_GRAY, hasShadow);
                 } else {
-                    renderText(
-                            graphics,
-                            DeltaFormat.formatDelta(position.time_delta),
-                            x + start_pos + 26,
-                            y + 14 + derived_height + 4,
-                            ColorUtil.lerpColor(
-                                    0xFFf5ee6a, // yellow
-                                    0xFFf56a6a, // red
-                                    clamp((float) Math.pow(2, position.time_delta / 60000f * -5), 0, 1)
-                            )
+                    int deltaColor = ColorUtil.lerpColor(
+                            COLOR_YELLOW_LERP,
+                            COLOR_RED_LERP,
+                            clamp((float) Math.pow(2, position.time_delta / 60000f * -5), 0, 1)
                     );
+                    renderTextDirect(context, DeltaFormat.formatDelta(position.time_delta), baseX + startPos + 26, rowY, deltaColor, hasShadow);
                 }
 
-                renderText(graphics, String.format("%s", DeltaFormat.formatMillis(position.flap)), x + start_pos - 24, y + 14 + derived_height + 4, 0xFFEBCC34 );
-
-                last_delta = position.time_delta;
+                renderTextDirect(context, DeltaFormat.formatMillis(position.flap), baseX + startPos - 24, rowY, COLOR_FLAP_YELLOW, hasShadow);
             }
 
+            PlayerListEntry playerListEntry = SWRC.minecraftClient.getNetworkHandler().getPlayerListEntry(playerName);
             if (playerListEntry != null) {
-                PlayerSkinDrawer.draw(graphics, playerListEntry.getSkinTextures(), x + 12 + 6, y + 14 + derived_height + 4, 8);
+                PlayerSkinDrawer.draw(context, playerListEntry.getSkinTextures(), baseX + 18, rowY, 8);
             }
 
-            rowHeight.put(position.player_name, precise_targeted_height);
-
-            offset += 1;
+            rowHeight.put(playerName, preciseHeight);
+            offset++;
         }
-        graphics.drawTexture(RenderPipelines.GUI_TEXTURED, WIDGETS_TEXTURE, x + 3, y + 3, 5, 0, 25, 10, 256, 256);
+
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, WIDGETS_TEXTURE, baseX + 3, baseY + 3, 0, 0, 25, 10, 256, 256);
+
+        stack.popMatrix();
+    }
+
+    private static void renderTextDirect(DrawContext graphics, String text, int x, int y, int color, boolean shadow) {
+        graphics.drawText(SWRC.minecraftClient.textRenderer, text, x, y, color, shadow);
     }
 
     public static void renderText(DrawContext graphics, String text, int x, int y, int color) {
@@ -126,40 +155,4 @@ public class QualiLeaderboard implements Hud {
     public static int widthOfText(String text) {
         return SWRC.minecraftClient.textRenderer.getWidth(text);
     }
-
-    /*public static void renderBox(DrawContext graphics, Identifier texture, int tx, int ty, int x, int y, int hh, int bh, int w) {
-        // Top
-        graphics.drawTexture(texture, x, y, tx, ty, 3, 3);
-        for (int i = 0; i < w; i++) {
-            graphics.drawTexture(texture, x + 3 + i, y, tx + 3, ty, 1, 3);
-        }
-        graphics.drawTexture(texture, x + w + 3, y, tx + 4, ty, 1, 3);
-
-        for (int hy = 0; hy < hh; hy++) {
-            graphics.drawTexture(texture, x, y + hy + 3, tx, ty + 3, 3, 1);
-            graphics.drawTexture(texture, x + w + 3, y + hy + 3, tx + 4, ty + 3, 1, 1);
-        }
-
-
-        graphics.drawTexture(GREY_TEXTURE, x + 3, y + 3, 0, 0, w, hh);
-
-        graphics.drawTexture(texture, x, y + hh + 3, tx, ty + 4, 3, 1);
-        for (int hsx = 0; hsx < w; hsx++) {
-            graphics.drawTexture(texture, x + hsx + 3, y + hh + 3, tx + 3, tx + 4, 1, 1);
-        }
-        graphics.drawTexture(texture, x + 3 + w, y + hh + 3, tx + 4, ty + 4, 1, 1);
-
-        graphics.drawTexture(GREY_TEXTURE, x + 3, y + hh + 4, 0, 0, w, bh);
-        for (int bby = 0; bby < bh; bby++) {
-            graphics.drawTexture(texture, x, y + hh + bby + 4, tx, ty + 5, 3, 1);
-
-            graphics.drawTexture(texture, x + w + 3, y + hh + bby + 4, tx + 4, ty + 5, 1, 1);
-        }
-
-        graphics.drawTexture(texture, x, y + hh + bh + 4, tx, ty + 6, 3, 3);
-        for (int fx = 0; fx < w; fx++) {
-            graphics.drawTexture(texture, x + fx + 3, y + hh + bh + 4, tx + 3, ty + 6, 1, 3);
-        }
-        graphics.drawTexture(texture, x + w + 3, y + hh + bh + 4, tx + 4, ty + 6, 1, 3);
-    }*/
 }

@@ -2,6 +2,7 @@ package uk.cloudmc.swrc.track;
 
 import com.google.gson.annotations.Expose;
 import net.minecraft.util.math.Vec3d;
+import uk.cloudmc.swrc.util.NTPTimeSync;
 import uk.cloudmc.swrc.util.Snapshot;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class Checkpoint {
     }
 
     public boolean isOnCooldown(String name) {
-        return !(cooldowns.getOrDefault(name, 0L) < System.currentTimeMillis());
+        return !(cooldowns.getOrDefault(name, 0L) < NTPTimeSync.getTrueTime());
     }
 
     public ArrayList<Snapshot> getLineCrosses(ArrayList<Snapshot> positionSnapshots) {
@@ -58,7 +59,7 @@ public class Checkpoint {
                 if (side.line && side.between) {
                     line_crosses.add(positionSnapshot);
 
-                    setCooldownExpire(positionSnapshot.getPlayer(), System.currentTimeMillis() + 10000);
+                    setCooldownExpire(positionSnapshot.getPlayer(), NTPTimeSync.getTrueTime() + 10000);
 
                     checkpoint_sides.put(positionSnapshot.getPlayer(), true);
                     continue;

@@ -24,6 +24,7 @@ import uk.cloudmc.swrc.SWRCConfig;
 import uk.cloudmc.swrc.net.packets.S2CUpdatePacket;
 import uk.cloudmc.swrc.util.ColorUtil;
 import uk.cloudmc.swrc.util.DeltaFormat;
+import uk.cloudmc.swrc.util.NTPTimeSync;
 
 import static net.minecraft.util.math.MathHelper.clamp;
 
@@ -80,7 +81,7 @@ public abstract class LivingEntityRenderMixin<T extends LivingEntity, S extends 
         matrices.scale(0.025f, 0.025f, 0.025f);
 
         String playerName = player.getName().getString();
-        long lapTime = System.currentTimeMillis() - race.getLapBeginTime(playerName);
+        long lapTime = NTPTimeSync.getTrueTime() - race.getLapBeginTime(playerName);
 
         Text text = Text.empty()
                 .append(Text.literal("P" + (race.raceLeaderboardPositions.indexOf(leaderboardPos) + 1) + " ")

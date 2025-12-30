@@ -1,6 +1,7 @@
 package uk.cloudmc.swrc.hud;
 
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderTickCounter;
 import org.joml.Matrix3x2fStack;
 import uk.cloudmc.swrc.SWRC;
 import uk.cloudmc.swrc.SWRCConfig;
@@ -62,7 +63,7 @@ public class StatusHud implements Hud {
 
                 if (WebsocketManager.racerSocketAvalible()) {
                     if (SWRC.getRace() != null) {
-                        if (SWRCConfig.getInstance().pos_tracking) {
+                        if (SWRC.getRace().probably_tracking) {
                             this.renderChip(context, "TRACKING", a, 0, 0xAA6AF596);
                         } else {
                             this.renderChip(context, "OBSERVING", a, 0, 0xAA6AB9F5);
@@ -104,7 +105,7 @@ public class StatusHud implements Hud {
     }
 
     @Override
-    public void render(DrawContext context, float tickDelta) {
+    public void $render(DrawContext context, RenderTickCounter tickDelta) {
         int scaledWidth = SWRC.minecraftClient.getWindow().getScaledWidth();
         int scaledHeight = SWRC.minecraftClient.getWindow().getScaledHeight();
 
@@ -133,8 +134,8 @@ public class StatusHud implements Hud {
         int text_width = SWRC.minecraftClient.textRenderer.getWidth(text);
         int total_width = text_width + padding * 2;
 
-        context.drawText(SWRC.minecraftClient.textRenderer, text, x + padding, y + padding, 0xFFFFFFFF, true);
         context.fill(x, y, x + total_width, y + 10, color);
+        context.drawText(SWRC.minecraftClient.textRenderer, text, x + padding, y + padding, 0xFFFFFFFF, true);
 
         return total_width;
     }

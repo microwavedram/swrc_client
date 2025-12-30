@@ -31,16 +31,6 @@ public class SWRCModMenu implements ModMenuApi {
                     .setSaveConsumer(newValue -> config.race_key = newValue)
                     .build());
 
-            Category.addEntry(packet.startStrField(Text.of("Race Header Text"), config.header_text)
-                    .setDefaultValue("S2 @ %s")
-                    .setSaveConsumer(newValue -> config.header_text = newValue)
-                    .build());
-
-            Category.addEntry(packet.startBooleanToggle(Text.of("Toggle Position Tracking"), config.pos_tracking)
-                    .setDefaultValue(true)
-                    .setSaveConsumer(newValue -> config.pos_tracking = newValue)
-                    .build());
-
             Category.addEntry(packet.startBooleanToggle(Text.of("Toggle Text Shadow"), config.leaderboard_shadow)
                     .setDefaultValue(true)
                     .setSaveConsumer(newValue -> config.leaderboard_shadow = newValue)
@@ -51,9 +41,44 @@ public class SWRCModMenu implements ModMenuApi {
                     .setSaveConsumer(newValue -> config.renderLapTimesAboveHeads = newValue)
                     .build());
 
+            Category.addEntry(packet.startBooleanToggle(Text.of("Render the event feed"), config.renderEventFeed)
+                    .setDefaultValue(true)
+                    .setSaveConsumer(newValue -> config.renderEventFeed = newValue)
+                    .build());
+
+            Category.addEntry(packet.startDoubleField(Text.of("Split hud X"), config.split_hud_x)
+                    .setDefaultValue(0.5)
+                    .setSaveConsumer(newValue -> config.split_hud_x = newValue)
+                    .build());
+
+            Category.addEntry(packet.startDoubleField(Text.of("Split hud Y"), config.split_hud_y)
+                    .setDefaultValue(0.6)
+                    .setSaveConsumer(newValue -> config.split_hud_y = newValue)
+                    .build());
+
+            Category.addEntry(packet.startDoubleField(Text.of("Leaderboard X"), config.leaderboard_x)
+                    .setDefaultValue(0)
+                    .setSaveConsumer(newValue -> config.leaderboard_x = newValue)
+                    .build());
+
+            Category.addEntry(packet.startDoubleField(Text.of("Leaderboard Y"), config.leaderboard_y)
+                    .setDefaultValue(0)
+                    .setSaveConsumer(newValue -> config.leaderboard_y = newValue)
+                    .build());
+
+            Category.addEntry(packet.startDoubleField(Text.of("Leaderboard Scale"), config.leaderboard_scale)
+                    .setDefaultValue(1.0)
+                    .setSaveConsumer(newValue -> config.leaderboard_scale = newValue)
+                    .build());
+
             Category.addEntry(packet.startTextField(Text.of("Default Server"), config.default_server)
                     .setDefaultValue("wss://swrc.cloudmc.uk/realtime/")
                     .setSaveConsumer(newValue -> config.default_server = newValue)
+                    .build());
+
+            Category.addEntry(packet.startTextField(Text.of("NTP Server"), config.ntp_server)
+                    .setDefaultValue("pool.ntp.org")
+                    .setSaveConsumer(newValue -> config.ntp_server = newValue)
                     .build());
 
             return builder.build();

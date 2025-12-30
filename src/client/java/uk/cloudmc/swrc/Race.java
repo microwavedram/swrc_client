@@ -1,6 +1,7 @@
 package uk.cloudmc.swrc;
 
 import com.google.gson.annotations.Expose;
+import it.unimi.dsi.fastutil.Hash;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import uk.cloudmc.swrc.net.packets.*;
 import uk.cloudmc.swrc.track.Checkpoint;
@@ -29,7 +30,12 @@ public class Race {
     public HashMap<String, Integer> laps = new HashMap<>();
     public HashMap<Integer, HashMap<String, SnapshotTime>> trap_state = new HashMap<>();
 
+
+    @Expose public HashMap<String, S2CUpdatePacket.RCClient> rc_clients = new HashMap<>();
+    @Expose public HashMap<String, S2CUpdatePacket.RacerClient> racer_clients = new HashMap<>();
+
     public S2CUpdatePacket.Flap flap;
+    public boolean probably_tracking = false;
 
     private RaceState raceState = RaceState.NONE;
 
@@ -78,7 +84,7 @@ public class Race {
     public void update() {
         if (SWRC.minecraftClient.world == null || this.raceState == RaceState.NONE) return;
 
-        long update_start = System.currentTimeMillis();
+        long update_start = NTPTimeSync.getTrueTime();
 
         ArrayList<Snapshot> snapshots = new ArrayList<>();
         for (AbstractClientPlayerEntity player: SWRC.minecraftClient.world.getPlayers()) {
@@ -120,7 +126,7 @@ public class Race {
 
             for (Snapshot trapEnterCross : trap_exit_crosses) {
                 SnapshotTime enter = state.get(trapEnterCross.getPlayer());
-                if (enter != null && WebsocketManager.rcSocketAvalible() && SWRCConfig.getInstance().pos_tracking) {
+                if (enter != null && WebsocketManager.rcSocketAvalible() && probably_tracking) {
                     SpeedTrapResult speedTrapResult = new SpeedTrapResult();
 
                     speedTrapResult.setPlayer(trapEnterCross.getPlayer());
@@ -163,7 +169,7 @@ public class Race {
             lineCrossPacket.checkpoint_crosses = checkpoint_crosses_names;
 
 
-            if (WebsocketManager.rcSocketAvalible() && SWRCConfig.getInstance().pos_tracking) {
+            if (WebsocketManager.rcSocketAvalible() && probably_tracking) {
                 WebsocketManager.rcWebsocketConnection.sendPacket(lineCrossPacket);
             }
         }
@@ -174,7 +180,7 @@ public class Race {
             pitCrossPacket.timestamp = update_start;
             pitCrossPacket.pit_crosses = getNamesFromSnapshots(pit_crosses);
 
-            if (WebsocketManager.rcSocketAvalible() && SWRCConfig.getInstance().pos_tracking) {
+            if (WebsocketManager.rcSocketAvalible() && probably_tracking) {
                 WebsocketManager.rcWebsocketConnection.sendPacket(pitCrossPacket);
             }
         }
@@ -185,7 +191,7 @@ public class Race {
             pitEnterPacket.timestamp = update_start;
             pitEnterPacket.pit_enter_crosses = getNamesFromSnapshots(pit_enter_crosses);
 
-            if (WebsocketManager.rcSocketAvalible() && SWRCConfig.getInstance().pos_tracking) {
+            if (WebsocketManager.rcSocketAvalible() && probably_tracking) {
                 WebsocketManager.rcWebsocketConnection.sendPacket(pitEnterPacket);
             }
         }
@@ -207,7 +213,7 @@ public class Race {
             }
         }
 
-        return System.currentTimeMillis();
+        return NTPTimeSync.getTrueTime();
     }
 
     public void setLapCounts(HashMap<String, Integer> laps) {
@@ -284,5 +290,9 @@ public class Race {
 
     public int getTotalPits() {
         return total_pits;
+    }
+
+    public String getId() {
+        return id;
     }
 }

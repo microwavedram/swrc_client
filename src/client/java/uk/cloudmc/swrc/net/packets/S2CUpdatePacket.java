@@ -11,6 +11,17 @@ import java.util.Objects;
 public class S2CUpdatePacket extends Packet<S2CUpdatePacket> {
     public static final char packetId = 0x05;
 
+    public static class RCClient {
+        @Expose public String version;
+        @Expose public boolean tracking;
+        @Expose public boolean clock_precise;
+        @Expose public long clock_precision;
+    }
+
+    public static class RacerClient {
+        @Expose public String version;
+    }
+
     public static class RaceLeaderboardPosition {
         @Expose public String player_name;
         @Expose public long time_delta;
@@ -114,22 +125,16 @@ public class S2CUpdatePacket extends Packet<S2CUpdatePacket> {
         }
     }
 
-    @Expose
-    public ArrayList<String> racers;
-    @Expose
-    public ArrayList<RaceLeaderboardPosition> race_leaderboard;
-    @Expose
-    public ArrayList<PlayerSplit> race_lap_begin;
-    @Expose
-    public HashMap<String, Integer> racer_pits;
-    @Expose
-    public HashMap<String, Integer> racer_laps;
-    @Expose
-    public Flap flap;
-    @Expose
-    public long timer_start;
-    @Expose
-    public long timer_duration;
+    @Expose public ArrayList<String> racers;
+    @Expose public ArrayList<RaceLeaderboardPosition> race_leaderboard;
+    @Expose public ArrayList<PlayerSplit> race_lap_begin;
+    @Expose public HashMap<String, Integer> racer_pits;
+    @Expose public HashMap<String, Integer> racer_laps;
+    @Expose public Flap flap;
+    @Expose public long timer_start;
+    @Expose public long timer_duration;
+    @Expose public HashMap<String, RCClient> rc_clients;
+    @Expose public HashMap<String, RacerClient> racer_clients;
 
     @Override
     public String toString() {
@@ -142,6 +147,8 @@ public class S2CUpdatePacket extends Packet<S2CUpdatePacket> {
                 ", flap=" + flap +
                 ", timer_start=" + timer_start +
                 ", timer_duration=" + timer_duration +
+                ", rc_clients=" + rc_clients +
+                ", racer_clients=" + racer_clients +
                 '}';
     }
 

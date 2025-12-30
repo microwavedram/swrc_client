@@ -1,5 +1,9 @@
 package uk.cloudmc.swrc.util;
 
+import net.minecraft.text.Text;
+
+import static net.minecraft.util.math.MathHelper.clamp;
+
 public class DeltaFormat {
     public static String formatMillis(long millis) {
         long absMillis = Math.abs(millis);
@@ -24,5 +28,16 @@ public class DeltaFormat {
         }
 
         return prefix + formatMillis(millis);
+    }
+
+    public static Text formatLapDelta(long millis, long interval) {
+        double normalized = Math.clamp((float) millis / interval, -2, 2);
+        double lerp = 1f/(1f + Math.exp(-2f * normalized));
+
+        return Text.literal(formatDelta(millis)).withColor(ColorUtil.lerpColor(
+                0xFF6BF490,// red
+                0xFFf56a6a,  // green
+                (float) clamp(lerp, 0, 1)
+        ));
     }
 }
